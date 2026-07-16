@@ -1,0 +1,94 @@
+% Auth: Nicklas Vraa
+% Docs: https://github.com/NicklasVraa/LiX
+% Everything you need to know about this template is found in on the github repository above. Stars are very appreciated.
+
+\documentclass{novel}
+
+% ===== PACKAGES POUR LE CONTENU SCIENTIFIQUE =====
+% Mathématiques avancées
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bm} % pour les vecteurs en gras
+\usepackage{mdframed}
+\usepackage{enumitem}
+
+% Figures et graphiques
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage{float}
+
+% Tableaux améliorés
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{pdfpages}
+
+% ===== PACKAGES POUR LA MODÉLISATION =====
+% Algorithmes et pseudo-code
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% Diagrammes et schémas
+\usepackage{tikz}
+\usetikzlibrary{arrows, positioning, shapes}
+
+% Listings de code (si nécessaire)
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Numérotation des équations par chapitre
+\numberwithin{equation}{chapter}
+
+% ===== COMMANDES PERSONNALISÉES =====
+
+% Environnements théoriques
+\theoremstyle{definition}
+\newtheorem{definition}{Définition}[chapter]
+\newtheorem{exemple}{Exemple}[chapter]
+\newtheorem{notation}{Notation}[chapter]
+
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[chapter]
+\newtheorem{corollaire}{Corollaire}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{lemme}{Lemme}[chapter]
+\newtheorem{principe}{Principe}[chapter]
+\newtheorem{proprietes}{Propriété}[chapter]
+\newtheorem{exercice}{Exercice}[chapter]
+
+\theoremstyle{remark}
+\newtheorem{remarque}{Remarque}[chapter]
+\newtheorem{objectif}{Objectif}[chapter]
+\newtheorem{bilan}{Bilan}[chapter]
+
+\theoremstyle{proof}
+\newtheorem{solution}{Solution}[chapter]
+
+
+\lang      {french}
+\title     {Introduction à l'algorithme EM}
+\subtitle  {Inférence à partir de données incomplètes en génétique des populations}
+\authors   {Lorenzo Segoni}
+\cover     {resources/novel_front.pdf}{resources/novel_back.pdf}
+%\license   {CC}{by-nc-sa}{3.0}
+%\isbn      {978-0201529838}
+%\publisher {NV Publishing Company}
+%\edition   {1}{2023}
+%\dedicate  {Myself}{Because I'm cool}
+%\thank     {Thank you to me for being the best}
+%\keywords  {fiction, template, packages}
+
+%\note{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor est arcu, sed euismod metus imperdiet iaculis. Quisque vestibulum molestie nulla, non consectetur tellus mollis a. Nunc commodo magna a elit commodo dignissim.}
+
+\blurb{Ce cours introduit l'algorithme EM (Expectation–Maximization) à travers un fil conducteur issu de la génétique des populations : l'estimation de fréquences alléliques à partir de données incomplètes. Après un rappel des notions de génétique et de la loi de Hardy–Weinberg, on montre comment l'ambiguïté entre génotypes et phénotypes (locus ABO) rend le maximum de vraisemblance analytiquement inaccessible. On compare alors les méthodes numériques classiques (Newton–Raphson, score de Fisher) à l'algorithme EM, qui exploite la structure à variables latentes du modèle, avant d'aborder l'estimation de la variance de l'estimateur par bootstrap. Le fil conducteur reste l'inférence à partir de données incomplètes, des fondements probabilistes jusqu'à la mise en œuvre.}
+
+\begin{document}
+
+\toc
+
+
+\input{Cours/Ch} %FINIS
+
+\end{document}

@@ -1,0 +1,901 @@
+\chapter{Introduction}
+
+La \textbf{génétique} étudie la manière dont l'information héréditaire, portée par le génome, se transmet d'une génération à l'autre et s'exprime à travers les caractères des individus. Ce cours s'articulera autour de deux perspectives complémentaires.
+
+La première approche est l'\textbf{épidémiologie génétique}. À l'échelle des populations (plutôt que de familles isolées), elle se consacre à la recherche des facteurs génétiques et des interactions gènes-environnement qui influencent le risque d'apparition d'une maladie ou modulent la distribution d'un phénotype.
+
+La seconde approche, la \textbf{génétique des populations}, étudie quant à elle la distribution et la dynamique des variants génétiques (allèles, génotypes, haplotypes) au sein d'un groupe donné. Elle s'intéresse à la façon dont ces variants évoluent sous l'effet de diverses forces évolutives et démographiques, telles que la dérive génétique, la sélection naturelle, les migrations, les mutations et les accouplements non aléatoires.
+
+\section{Deux grandes classes de maladies}
+
+Un phénotype pathologique peut relever de l'action d'un seul gène ou de la combinaison de plusieurs facteurs. Cette distinction est fondamentale, car elle conditionne la façon dont on modélise et estime le risque :
+
+\begin{itemize}
+\item Les \textbf{maladies monogéniques} résultent de la mutation d'un unique gène. Selon le mode de transmission, une seule copie mutée peut suffire à exprimer la maladie (mutation \textit{dominante}), ou deux copies sont nécessaires (mutation \textit{récessive}). Ces mutations confèrent une forte probabilité de développer la maladie ; lorsque cette probabilité atteint $100\%$, on parle de \textit{pénétrance
+complète}. On en connaît environ $5000$~: elles sont rares ou très rares, souvent
+très graves, parfois létales.
+\item Les \textbf{maladies complexes}, ou multifactorielles, résultent au contraire de la combinaison de multiples facteurs à la fois génétiques et environnementaux, entre lesquels des interactions sont possibles. Plus fréquentes en population, elles sont généralement moins graves que les maladies monogéniques. Les cancers, les diabètes, les maladies allergiques, cardiovasculaires, infectieuses ou psychiatriques en constituent autant d'exemples.
+\end{itemize}
+
+\subsection*{Où se situe ce cours}
+
+Ce cours se déploie à l'intersection de trois domaines :
+
+\begin{itemize}
+  \item la \textbf{génétique mendélienne}, qui décrit la transmission au sein des
+        familles et des pedigrees ;
+  \item la \textbf{génétique des populations}, qui s'intéresse aux fréquences,
+        aux équilibres et aux modèles probabilistes associés ;
+  \item l'\textbf{épidémiologie génétique}, qui met en relation gènes et
+        phénotypes (risque, traits).
+\end{itemize}
+
+\textbf{Le fil rouge : } Un même problème traverse ces trois domaines : on cherche à \textit{estimer des
+paramètres populationnels} — fréquences alléliques, proportions de génotypes, etc. — alors même que l'on n'observe pas tout. Certaines quantités restent cachées (génotypes non déterminés, ancestries inconnues, $\dots$) et ne se lisent pas directement dans les données. C'est précisément ce terrain, celui de l'inférence à partir de \textit{données incomplètes}, que l'algorithme EM permet d'aborder; il constituera le fil conducteur des séances à venir.
+
+
+\subsection*{Rappels de vocabulaire}
+
+Avant d'aborder les modèles, fixons le vocabulaire de base. Les définitions qui suivent constituent les briques élémentaires sur lesquelles reposeront tous les objets manipulés par la suite.
+
+\begin{mdframed}
+\begin{definition}
+\begin{itemize}
+\item \textbf{Génome} ensemble du matériel génétique d'un individu.
+
+\textit{Exemple humain} : $46$ molécules d'ADN, soit $23$ paires de chromosomes.
+\item \textbf{ADN} double hélice composée de nucléotides — A, C, G, T. 
+
+\textit{Exemple humain} : environ $3$ milliards de paires de bases.
+\item \textbf{Chromosomes} structures portant l'ADN.
+
+\textit{Exemple humain} : $22$ paires d'autosomes et $1$ paire de chromosomes sexuels ($XX$ ou $XY$).
+\item \textbf{Gène} portion d'ADN portant une information, le plus souvent codante.
+\item \textbf{Locus}  position (adresse) d'un élément sur le génome.
+
+\item \textbf{Polymorphisme} variation observée à un locus ; chaque version possible est appelée un \textbf{allèle}. 
+
+\textit{Exemples} : SNP, microsatellites, insertions/délétions, CNV, $\dots$
+\end{itemize}
+\end{definition}
+\end{mdframed}
+
+\chapter{Génétique des populations et estimation de fréquences alléliques}
+
+\section{Transmission mendélienne : Première loi de Mendel}
+
+Considérons un locus autosomal. Chaque individu y porte deux allèles, l'un d'origine maternelle et l'autre d'origine paternelle. Lors de la reproduction, chaque parent transmet à sa descendance l'un de ses deux allèles, tiré au hasard et de façon équiprobable.
+
+L'idée directrice est la suivante : c'est précisément le caractère aléatoire de la transmission qui permet de relier les \textit{fréquences alléliques} aux \textit{fréquences génotypiques} dans la population.
+
+\section{Loi de Hardy-Weinberg}
+
+Plaçons-nous sous un ensemble d'hypothèses idéalisées : 
+
+\begin{itemize}
+\item population d'effectif illimité, 
+\item non soumise à la sélection  
+\item exempte de mutation. 
+\end{itemize}
+
+Sous ces conditions, deux propriétés remarquables apparaissent: 
+
+\begin{itemize}
+\item d'une part, les fréquences alléliques demeurent constantes au fil des générations ; 
+\item d'autre part, si les accouplements sont panmictiques (aléatoires), les fréquences génotypiques se déduisent directement des fréquences alléliques et restent elles aussi constantes.
+\end{itemize}
+
+Considérons un locus $A/B$ avec $p_A + p_B = 1$.
+
+\textbf{Fréquences génotypiques en fonction des fréquences alléliques.}
+
+$$
+\mathbb{P}(AA) = p_A^2, \quad \mathbb{P}(AB) = 2\, p_A p_B, \quad \mathbb{P}(BB) = p_B^2 .
+$$
+
+\textbf{Fréquences alléliques en fonction des fréquences génotypiques.}
+
+Si l'on observe les effectifs $N_{AA}, N_{AB}, N_{BB}$ dans un échantillon de taille $N$, alors
+
+$$
+p_A = \frac{2 N_{AA} + N_{AB}}{2N} = p_{AA} + \tfrac{1}{2}\, p_{AB}, \quad p_B = 1 - p_A .
+$$
+
+\begin{exemple}
+Considérons un locus polymorphique à trois allèles possibles : $A$, $B$ et $O$.
+
+On dénombre six génotypes : $AA$, $AO$, $AB$, $BB$, $BO$ et $OO$. Les allèles
+
+$A$ et $B$ sont codominants tandis que $O$ est récessif, ce qui conduit à quatre phénotypes observables :
+
+\begin{itemize}
+  \item phénotype $A$ : génotypes $AA$ ou $AO$ ;
+  \item phénotype $B$ : génotypes $BB$ ou $BO$ ;
+  \item phénotype $AB$ : génotype $AB$ ;
+  \item phénotype $O$ : génotype $OO$.
+\end{itemize}
+\end{exemple}
+
+Plus généralement, on considère un locus polymorphique à $k$ allèles codominants.
+
+Traitons le cas $k = 2$: deux allèles $A$ et $B$, de fréquences respectives $p_A$ et $p_B$ avec $p_A + p_B = 1$, donnant trois génotypes possibles $AA$, $AB$ et $BB$.
+
+On peut alors se poser les questions suivantes : quelle est la probabilité qu'un père transmette l'allèle $A$ ? Qu'une mère transmette l'allèle $A$ ? Et quelles sont, par suite, les probabilités des génotypes $AA$, $BB$ et $AB$ ?
+
+\subsection{Les proportions de Hardy-Weinberg sont un équilibre}
+
+Supposons une population idéale. Les fréquences génotypiques de la première génération sont
+
+$$
+\mathbb{P}_{AA} = p_A^2, \qquad \mathbb{P}_{AB} = 2\, p_A p_B, \quad \mathbb{P}_{BB} = p_B^2 .
+$$
+
+Que deviennent-elles à la deuxième génération~? Sous panmixie, on recense les croisements parentaux, leur fréquence et la loi de transmission à l'enfant~:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\hline
+Parents & Fréquence & $P_{\text{enfant}}(AA)$ & $P_{\text{enfant}}(AB)$
+        & $P_{\text{enfant}}(BB)$ \\
+\hline
+$AA \times AA$ & $\mathbb{P}_{AA}^2$              & $1$           & $0$           & $0$ \\
+$AA \times AB$ & $2\,\mathbb{P}_{AA}\mathbb{P}_{AB}$ & $\tfrac{1}{2}$ & $\tfrac{1}{2}$ & $0$ \\
+$AA \times BB$ & $2\,\mathbb{P}_{AA}\mathbb{P}_{BB}$ & $0$           & $1$           & $0$ \\
+$AB \times AB$ & $\mathbb{P}_{AB}^2$              & $\tfrac{1}{4}$ & $\tfrac{1}{2}$ & $\tfrac{1}{4}$ \\
+$AB \times BB$ & $2\,\mathbb{P}_{AB}\mathbb{P}_{BB}$ & $0$           & $\tfrac{1}{2}$ & $\tfrac{1}{2}$ \\
+$BB \times BB$ & $\mathbb{P}_{BB}^2$              & $0$           & $0$           & $1$ \\
+\hline
+\end{tabular}
+\end{center}
+
+En sommant les contributions de chaque croisement, on vérifie que les fréquences génotypiques de la génération 2 coïncident avec celles de la génération 1: la distribution de Hardy-Weinberg est bien un point fixe du mécanisme de reproduction.
+
+\begin{exemple}[Locus lié au sexe]
+Considérons un locus bi-allélique $A/B$ porté par le chromosome $X$. Les femmes
+($XX$) présentent les génotypes $AA$, $AB$ ou $BB$, tandis que les hommes
+($XY$) ne portent qu'un seul allèle, $A$ ou $B$. On note
+\begin{itemize}
+  \item $f_n$ la fréquence de $A$ chez les femmes à la génération $n$~;
+  \item $m_n$ la fréquence de $A$ chez les hommes à la génération $n$.
+\end{itemize}
+
+Supposons autant de femmes que d'hommes dans la population. Quelle est la
+proportion initiale de l'allèle $A$, notée $p_0$~? Avec $N_F = N_M = N/2$, les
+femmes portant deux chromosomes $X$ et les hommes un seul, on obtient
+\begin{align*}
+N_A(0) &= 2 f_0 \cdot \tfrac{N}{2} + m_0 \cdot \tfrac{N}{2}, \\
+N_T    &= 2 \cdot \tfrac{N}{2} + \tfrac{N}{2} = \tfrac{3N}{2}, \\
+p_0    &= \frac{2 f_0 + m_0}{3}.
+\end{align*}
+
+Qu'en est-il de $p_n$~? Calculons d'abord $p_1$. Un homme hérite son unique
+chromosome $X$ de sa mère~; une femme hérite chacun de ses deux chromosomes $X$
+d'un de ses deux parents, avec la même probabilité. On en déduit les relations
+de récurrence
+$$
+m_n = f_{n-1} \quad (n \geq 1), \qquad
+f_n = \frac{f_{n-1} + m_{n-1}}{2} \quad (n \geq 1).
+$$
+Il vient alors
+$$
+p_1 = \frac{2 f_1 + m_1}{3} = \frac{2 f_0 + m_0}{3} = p_0 ,
+$$
+de sorte que la fréquence allélique reste inchangée d'une génération à l'autre.
+
+On peut préciser ce comportement en montrant que $f_n$ converge vers $p$~:
+\begin{align*}
+f_n - p
+&= \tfrac{1}{2} f_{n-1} + \tfrac{1}{2} m_{n-1} - \tfrac{3}{2} p + \tfrac{1}{2} p \\
+&= \tfrac{1}{2} f_{n-1} + \tfrac{1}{2} m_{n-1}
+   - \tfrac{3}{2}\left( \tfrac{2}{3} f_{n-1} + \tfrac{1}{3} m_{n-1} \right)
+   + \tfrac{1}{2} p \\
+&= -\tfrac{1}{2}\,(f_{n-1} - p).
+\end{align*}
+La convergence est donc géométrique~:
+$$
+f_n - p = \left( -\tfrac{1}{2} \right)^n (f_0 - p).
+$$
+\end{exemple}
+
+\begin{exemple}[Locus $MN$ : estimation directe]
+Considérons le locus diallélique $M/N$, à trois génotypes $M\!/\!M$, $M\!/\!N$
+et $N\!/\!N$. Les allèles $M$ et $N$ étant codominants, les trois phénotypes
+$MM$, $MN$ et $NN$ sont directement observables. On dispose d'un échantillon de
+$6129$ individus~:
+
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+Échantillon & $N_{MM}$ & $N_{MN}$ & $N_{NN}$ \\
+\hline
+Nombre observé      & $1787$   & $3039$   & $1303$ \\
+Nombre attendu      & $1783{,}8$ & $3045{,}4$ & $1299{,}8$ \\
+Proportion attendue & $0{,}291$  & $0{,}497$  & $0{,}212$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Posons $a = N_{MM}$, $b = N_{MN}$, $c = N_{NN}$, avec $a + b + c = n$. On souhaite
+estimer $p_M$ et $p_N$, sous la contrainte $p_M + p_N = 1$. Sous l'équilibre de
+Hardy--Weinberg,
+$$
+\mathbb{P}(MM) = p_M^2, \qquad \mathbb{P}(MN) = 2\, p_M p_N, \qquad
+\mathbb{P}(NN) = p_N^2 .
+$$
+
+Quelle est la probabilité de tirer un individu $MM$~? Deux individus $MM$~? Deux
+$MM$ et un $MN$~? En prolongeant ce raisonnement, on obtient la densité
+$f(a,b,c)$. Chaque individu appartient à l'une des trois catégories $MM$, $MN$,
+$NN$, de probabilités respectives $p_M^2$, $2 p_M p_N$, $p_N^2$. La probabilité
+d'observer l'échantillon $(a,b,c)$ est donc
+$$
+L(p_M) = \binom{n}{a,\,b,\,c}\, (p_M^2)^a\, (2 p_M p_N)^b\, (p_N^2)^c,
+\qquad
+\binom{n}{a,\,b,\,c} = \frac{n!}{a!\, b!\, c!} .
+$$
+
+Comme $p_N = 1 - p_M$, on peut exprimer $L$, puis la log-vraisemblance $\ell$,
+en fonction du seul paramètre $p_M$~:
+\begin{align*}
+\ell(p_M) &= \log L(p_M) \\
+&= a \log(p_M^2) + b \log(2 p_M p_N) + c \log(p_N^2) + \text{const} \\
+&= 2a \log(p_M) + b \log\!\big(2 p_M (1 - p_M)\big) + 2c \log(1 - p_M)
+   + \text{const}.
+\end{align*}
+
+En dérivant,
+$$
+\ell'(p_M) = \frac{2a}{p_M} + \frac{b}{p_M} - \frac{b}{1 - p_M}
+             - \frac{2c}{1 - p_M},
+$$
+puis en résolvant $\ell'(p_M) = 0$, on aboutit à l'estimateur du maximum de
+vraisemblance
+$$
+\hat{p}_M = \frac{2a + b}{2n}, \qquad \hat{p}_N = 1 - \hat{p}_M .
+$$
+
+Avec les données $a = 1787$, $b = 3039$, $c = 1303$ et $n = 6129$, on obtient
+$$
+\hat{p}_M = \frac{2a + b}{2n} \approx 0{,}539, \qquad
+\hat{p}_N \approx 0{,}461 .
+$$
+
+Sous l'équilibre de Hardy--Weinberg, la méthode du maximum de vraisemblance est
+donc immédiate et coïncide avec la méthode de comptage des gènes (les fréquences
+alléliques déduites des fréquences génotypiques).
+\end{exemple}
+
+\begin{exemple}[Locus $ABO$ : données incomplètes]
+Revenons au locus $ABO$, à trois allèles $A$, $B$, $O$ et six génotypes $AA$,
+$AO$, $AB$, $BB$, $BO$, $OO$. Les allèles $A$ et $B$ sont codominants, $O$ est
+récessif, ce qui produit quatre phénotypes observables $A$, $B$, $AB$, $O$
+selon la correspondance suivante~:
+
+\begin{center}
+\begin{tabular}{ll}
+\hline
+Génotype     & Phénotype \\
+\hline
+$AA,\ AO$    & $A$ \\
+$BB,\ BO$    & $B$ \\
+$AB$         & $AB$ \\
+$OO$         & $O$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Contrairement au locus $MN$, les génotypes ne sont pas tous observables et
+certains phénotypes sont ambigus~: on observe les phénotypes, mais pas
+directement les génotypes. C'est là toute la difficulté.
+
+Prenons un échantillon de taille $n = 521$~:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\hline
+Phénotype & $A$ & $B$ & $AB$ & $O$ \\
+\hline
+Effectif  & $186$ & $38$ & $13$ & $284$ \\
+\hline
+\end{tabular}
+\end{center}
+
+On cherche à estimer $\theta = (p_A, p_B, p_O)$ à partir des phénotypes. Posons~:
+\begin{itemize}
+  \item le paramètre $\theta = (p_A, p_B, p_O)$ avec $p_A + p_B + p_O = 1$~;
+  \item les données observées (phénotypes)
+        $Y = (n_A, n_B, n_{AB}, n_O)$ avec $n = n_A + n_B + n_{AB} + n_O$~;
+  \item les données cachées (génotypes)
+        $Z = (n_{AA}, n_{AO}, n_{BB}, n_{BO}, n_{AB}, n_{OO})$
+        avec $n = \sum_g n_g$~;
+  \item les contraintes de cohérence
+        $n_{AA} + n_{AO} = n_A$, $n_{BB} + n_{BO} = n_B$,
+        $n_{AB} = n_{AB}$ et $n_{OO} = n_O$.
+\end{itemize}
+
+Sous l'équilibre de Hardy--Weinberg,
+$$
+\mathbb{P}(A) = p_A^2 + 2 p_A p_O, \quad
+\mathbb{P}(B) = p_B^2 + 2 p_B p_O, \quad
+\mathbb{P}(AB) = 2 p_A p_B, \quad
+\mathbb{P}(O) = p_O^2 .
+$$
+
+Pour $Y = (n_A, n_B, n_{AB}, n_O)$, la vraisemblance des données observées est
+\begin{align*}
+L(\theta)
+&= \binom{n}{n_A,\, n_B,\, n_{AB},\, n_O}\,
+   \mathbb{P}^{n_A}(A)\, \mathbb{P}^{n_B}(B)\,
+   \mathbb{P}^{n_{AB}}(AB)\, \mathbb{P}^{n_O}(O) \\
+&= \binom{n}{n_A,\, n_B,\, n_{AB},\, n_O}\,
+   (p_A^2 + 2 p_A p_O)^{n_A}\,
+   (p_B^2 + 2 p_B p_O)^{n_B}\,
+   (2 p_A p_B)^{n_{AB}}\,
+   (p_O^2)^{n_O} .
+\end{align*}
+
+La log-vraisemblance des données observées vaut, à une constante près,
+$$
+\ell(\theta) = n_A \log(p_A^2 + 2 p_A p_O)
+             + n_B \log(p_B^2 + 2 p_B p_O)
+             + n_{AB} \log(2 p_A p_B)
+             + n_O \log(p_O^2),
+$$
+sous la contrainte $p_A + p_B + p_O = 1$. En posant $p_O = 1 - p_A - p_B$, on
+obtient
+
+\begin{align*}
+\ell(p_A, p_B) &= n_A \log\!\big(p_A^2 + 2 p_A (1 - p_A - p_B)\big) \\
+              &+ n_B \log\!\big(p_B^2 + 2 p_B (1 - p_A - p_B)\big) \\
+              &+ n_{AB} \log(2 p_A p_B) \\
+              &+ n_O \log\!\big((1 - p_A - p_B)^2\big).
+\end{align*}
+
+Les équations du maximum de vraisemblance sont alors
+$\dfrac{\partial \ell}{\partial p_A} = 0$ et
+$\dfrac{\partial \ell}{\partial p_B} = 0$~: il s'agit d'un système non linéaire
+couplé, sans solution fermée explicite.
+
+Détaillons le calcul. Partons de
+$$
+\ell(p_A, p_B) = n_A \log(g_A) + n_B \log(g_B)
+               + n_{AB} \log(2 p_A p_B) + n_O \log(p_O^2),
+$$
+avec $p_O = 1 - p_A - p_B$, $g_A = p_A^2 + 2 p_A p_O$ et
+$g_B = p_B^2 + 2 p_B p_O$. En tenant compte de
+$\partial p_O / \partial p_A = \partial p_O / \partial p_B = -1$, les dérivées
+utiles sont
+\begin{align*}
+\frac{\partial g_A}{\partial p_A}
+  = \frac{\partial g_B}{\partial p_B} &= 2 p_O, \\
+\frac{\partial g_A}{\partial p_B} &= -2 p_A, \\
+\frac{\partial g_B}{\partial p_A} &= -2 p_B, \\
+\frac{\partial}{\partial p_A} \log(p_O^2)
+  = \frac{\partial}{\partial p_B} \log(p_O^2) &= -\frac{2}{p_O} .
+\end{align*}
+
+On en déduit
+\begin{align*}
+\frac{\partial \ell}{\partial p_A}
+  &= n_A \frac{2 p_O}{g_A} - n_B \frac{2 p_B}{g_B}
+     + \frac{n_{AB}}{p_A} - \frac{2 n_O}{p_O}, \\
+\frac{\partial \ell}{\partial p_B}
+  &= n_B \frac{2 p_O}{g_B} - n_A \frac{2 p_A}{g_A}
+     + \frac{n_{AB}}{p_B} - \frac{2 n_O}{p_O} .
+\end{align*}
+
+En remplaçant $p_O = 1 - p_A - p_B$ et en notant
+$$
+g_A = p_A^2 + 2 p_A (1 - p_A - p_B), \qquad
+g_B = p_B^2 + 2 p_B (1 - p_A - p_B),
+$$
+les équations du maximum de vraisemblance deviennent
+$$
+n_A \frac{2(1 - p_A - p_B)}{g_A} - n_B \frac{2 p_B}{g_B}
++ \frac{n_{AB}}{p_A} - \frac{2 n_O}{1 - p_A - p_B} = 0,
+$$
+$$
+n_B \frac{2(1 - p_A - p_B)}{g_B} - n_A \frac{2 p_A}{g_A}
++ \frac{n_{AB}}{p_B} - \frac{2 n_O}{1 - p_A - p_B} = 0 .
+$$
+
+\paragraph{Difficultés principales.}
+Les termes $\log(p_A^2 + 2 p_A p_O)$ et $\log(p_B^2 + 2 p_B p_O)$ contiennent des
+sommes~; celles-ci proviennent de l'ambiguïté génotypique ($AA/AO$ et $BB/BO$).
+Il en résulte plusieurs obstacles~:
+\begin{itemize}
+  \item les équations du maximum de vraisemblance (dérivées et contrainte)
+        forment un système non linéaire couplé~;
+  \item il est impossible d'isoler analytiquement $p_A$ ou $p_B$~: il n'existe
+        pas de formule explicite simple pour
+        $(\hat{p}_A, \hat{p}_B, \hat{p}_O)$~;
+  \item contrairement au locus $MN$ (génotypes observés), on ne peut pas
+        « compter directement » les allèles.
+\end{itemize}
+\end{exemple}
+
+\chapter{Résolution numérique d'un système non linéaire}
+
+L'exemple du locus $ABO$ nous a laissés devant un obstacle~: les équations du
+maximum de vraisemblance y forment un système non linéaire couplé, dépourvu de
+solution explicite. Pour estimer $\hat{\theta} = (\hat{p}_A, \hat{p}_B,
+\hat{p}_O)$, il faut donc recourir à des méthodes numériques. Plusieurs familles
+s'offrent à nous~:
+
+\begin{itemize}
+  \item les méthodes de \textbf{Newton} ou du \textbf{score}, qui exploitent les
+        dérivées de la log-vraisemblance~;
+  \item les méthodes de \textbf{point fixe}, qui reformulent le problème sous la
+        forme $\theta = \Phi(\theta)$~;
+  \item les méthodes d'\textbf{optimisation numérique générale}, qui maximisent
+        directement $\ell$.
+\end{itemize}
+
+Ces approches sont efficaces, mais elles partagent plusieurs fragilités~:
+
+\begin{itemize}
+  \item une forte \textbf{dépendance à l'initialisation}~;
+  \item un risque de \textbf{convergence vers un maximum local} plutôt que
+        global~;
+  \item une possible \textbf{instabilité numérique}, notamment lorsque la
+        hessienne est mal conditionnée.
+\end{itemize}
+
+L'objectif est donc de trouver une méthode plus stable, qui tire parti de la
+structure probabiliste du modèle plutôt que de traiter la log-vraisemblance
+comme une fonction quelconque à optimiser.
+
+\section{Méthode de Newton-Raphson}
+
+On cherche à annuler le gradient de la log-vraisemblance, c'est-à-dire à résoudre
+$$
+\nabla \ell(\theta) = 0 .
+$$
+
+\begin{mdframed}
+\begin{definition}
+La méthode de \textbf{Newton-Raphson} construit une suite d'itérés
+$$
+\theta^{(k+1)} = \theta^{(k)}
+  - \big[\nabla^2 \ell(\theta^{(k)})\big]^{-1}\, \nabla \ell(\theta^{(k)}),
+$$
+où $\nabla \ell$ désigne le vecteur score et $\nabla^2 \ell$ la matrice
+hessienne.
+\end{definition}
+\end{mdframed}
+
+Retenons ses principales caractéristiques~:
+\begin{itemize}
+  \item elle utilise à la fois le gradient (score) et la matrice hessienne~;
+  \item sa convergence est quadratique au voisinage du maximum~;
+  \item elle peut se révéler instable lorsque l'initialisation est éloignée de la
+        solution.
+\end{itemize}
+
+\subsection{Méthode du score (Fisher scoring)}
+
+On peut construire une variante de la méthode de Newton-Raphson en remplaçant la
+hessienne observée par sa valeur moyenne.
+
+\medskip
+
+\begin{mdframed}
+\begin{definition}
+La \textbf{méthode du score} substitue à la hessienne observée l'information de
+Fisher attendue~:
+$$
+\theta^{(k+1)} = \theta^{(k)}
+  + \mathcal{I}^{-1}(\theta^{(k)})\, \nabla \ell(\theta^{(k)}),
+$$
+où l'information de Fisher est définie par
+$$
+\mathcal{I}(\theta) = -\,\mathbb{E}\big[\nabla^2 \ell(\theta)\big].
+$$
+\end{definition}
+\end{mdframed}
+
+Cette variante présente deux atouts~:
+\begin{itemize}
+  \item elle est souvent un peu plus stable que la méthode de Newton~;
+  \item elle conserve une convergence quadratique au voisinage du maximum.
+\end{itemize}
+
+\section{L'algorithme EM}
+
+Les méthodes de Newton et du score attaquent directement l'équation
+$\nabla \ell(\theta) = 0$, au prix d'un gradient et d'une hessienne parfois
+délicats à manier. L'algorithme EM (\textit{Expectation--Maximization}) suit une
+tout autre stratégie~: au lieu de dériver la log-vraisemblance des données
+observées, il exploite la structure à \textbf{données cachées} du modèle. L'idée
+de départ est une remarque simple sur le locus $ABO$~: \textit{si l'on
+connaissait les génotypes}, l'estimation redeviendrait aussi facile que pour le
+locus $MN$ — un simple comptage d'allèles. Le seul obstacle est l'information
+manquante~; c'est précisément ce qu'EM est conçu pour contourner.
+
+\subsection{Vraisemblance des données complètes}
+
+\begin{exemple}[Locus $ABO$ — vraisemblance des données complètes]
+Supposons un instant que l'on observe les effectifs génotypiques
+$n_{AA}, n_{AO}, n_{BB}, n_{BO}, n_{AB}, n_{OO}$. Sous l'équilibre de
+Hardy--Weinberg,
+\begin{align*}
+\mathbb{P}(AA) &= p_A^2, & \mathbb{P}(AO) &= 2 p_A p_O, \\
+\mathbb{P}(BB) &= p_B^2, & \mathbb{P}(BO) &= 2 p_B p_O, \\
+\mathbb{P}(AB) &= 2 p_A p_B, & \mathbb{P}(OO) &= p_O^2 .
+\end{align*}
+
+Pour $Z = (n_{AA}, n_{AO}, n_{BB}, n_{BO}, n_{AB}, n_{OO})$, la vraisemblance des
+données \textbf{complètes} s'écrit
+$$
+L_c(\theta) = \binom{n}{n_{AA},\, n_{AO},\, n_{BB},\, n_{BO},\, n_{AB},\, n_{OO}}
+              \prod_{g} \mathbb{P}(g)^{n_g},
+$$
+où le produit porte sur les six génotypes $g$. La log-vraisemblance complète vaut
+alors, à une constante près,
+$$
+\ell_c(\theta) = \text{const} + \sum_{g} n_g \log \mathbb{P}(g),
+$$
+soit, en explicitant chaque terme,
+\begin{align*}
+\ell_c(\theta) = \text{const}
+  &+ n_{AA} \log(p_A^2) + n_{AO} \log(2 p_A p_O) \\
+  &+ n_{BB} \log(p_B^2) + n_{BO} \log(2 p_B p_O) \\
+  &+ n_{AB} \log(2 p_A p_B) + n_{OO} \log(p_O^2).
+\end{align*}
+
+Le point crucial~: il n'y a \textbf{plus de somme à l'intérieur des logarithmes}.
+Les termes quadratiques sont linéarisés, exactement comme pour le locus $MN$.
+La maximisation redevient donc immédiate.
+\end{exemple}
+
+\paragraph{Deux directions complémentaires.}
+De cette vraisemblance complète découlent deux calculs élémentaires, inverses
+l'un de l'autre.
+
+\begin{itemize}
+  \item \textbf{Si les génotypes étaient connus}, on estimerait les fréquences
+        alléliques par comptage~:
+        $$
+        \hat{p}_A = \frac{2 n_{AA} + n_{AO} + n_{AB}}{2n}, \quad
+        \hat{p}_B = \frac{2 n_{BB} + n_{BO} + n_{AB}}{2n}, \quad
+        \hat{p}_O = 1 - \hat{p}_A - \hat{p}_B .
+        $$
+  \item \textbf{Si les fréquences alléliques étaient connues}, on estimerait la
+        répartition des génotypes ambigus. Sous Hardy--Weinberg, un individu de
+        phénotype $A$ est $AA$ ou $AO$~; conditionnellement à ce phénotype,
+        $$
+        \mathbb{P}(AA \mid A, \theta) = \frac{p_A^2}{p_A^2 + 2 p_A p_O}, \qquad
+        \mathbb{P}(AO \mid A, \theta) = \frac{2 p_A p_O}{p_A^2 + 2 p_A p_O},
+        $$
+        d'où les effectifs attendus
+        $$
+        \hat{n}_{AA} = n_A \cdot \mathbb{P}(AA \mid A, \theta), \qquad
+        \hat{n}_{AO} = n_A - \hat{n}_{AA},
+        $$
+        et de même pour $BB/BO$ à partir de $n_B$.
+\end{itemize}
+
+Aucune des deux directions n'est directement exploitable seule (chacune suppose
+connu ce que l'on cherche justement à estimer). Mais que se passe-t-il si l'on
+\textit{alterne} ces deux étapes~?
+
+\subsection{Une première idée : alterner les deux estimations}
+
+L'algorithme naturel est le suivant~:
+\begin{enumerate}
+  \item partir d'une valeur initiale $(p_A^{(0)}, p_B^{(0)}, p_O^{(0)})$~;
+  \item calculer les effectifs génotypiques attendus (première direction)~;
+  \item mettre à jour les fréquences alléliques par comptage (seconde direction)~;
+  \item répéter jusqu'à convergence.
+\end{enumerate}
+
+Appliquons-le aux données $n_A = 186$, $n_B = 38$, $n_{AB} = 13$, $n_O = 284$
+($n = 521$), en partant de l'initialisation neutre
+$(p_A^{(0)}, p_B^{(0)}, p_O^{(0)}) = (\tfrac{1}{3}, \tfrac{1}{3}, \tfrac{1}{3})$.
+
+\textbf{Répartition initiale (étape E).} Comme
+$\mathbb{P}(AA \mid A) = p_A/(p_A + 2 p_O) = \tfrac{1}{3}$ à l'initialisation,
+$$
+\hat{n}_{AA}^{(0)} = 186 \cdot \tfrac{1}{3} = 62, \quad
+\hat{n}_{AO}^{(0)} = 124, \quad
+\hat{n}_{BB}^{(0)} = 38 \cdot \tfrac{1}{3} \approx 12{,}7, \quad
+\hat{n}_{BO}^{(0)} \approx 25{,}3 .
+$$
+
+\textbf{Mise à jour (étape M).}
+$$
+p_A^{(1)} \approx 0{,}250, \qquad
+p_B^{(1)} \approx 0{,}061, \qquad
+p_O^{(1)} \approx 0{,}688 .
+$$
+
+En itérant, les fréquences se stabilisent rapidement~:
+
+\begin{center}
+\begin{tabular}{cccc}
+\hline
+$k$ & $p_A^{(k)}$ & $p_B^{(k)}$ & $p_O^{(k)}$ \\
+\hline
+$0$ & $0{,}3333$ & $0{,}3333$ & $0{,}3333$ \\
+$1$ & $0{,}2500$ & $0{,}0611$ & $0{,}6889$ \\
+$2$ & $0{,}2185$ & $0{,}0505$ & $0{,}7311$ \\
+$3$ & $0{,}2142$ & $0{,}0502$ & $0{,}7357$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Cette procédure, construite de façon intuitive, \textit{est} l'algorithme EM. Elle
+repose sur trois ingrédients~:
+\begin{itemize}
+  \item des \textbf{données observées}~: les phénotypes~;
+  \item des \textbf{données cachées}~: les génotypes~;
+  \item une \textbf{alternance}~: compléter en moyenne, puis maximiser (mettre à
+        jour).
+\end{itemize}
+
+\subsection{Formalisation}
+
+\medskip
+
+\begin{mdframed}
+\begin{definition}
+L'\textbf{algorithme EM} est une méthode itérative d'estimation du maximum de
+vraisemblance en présence de données cachées. Chaque itération enchaîne deux
+étapes.
+\begin{itemize}
+  \item \textbf{Étape E (Espérance).} Aux paramètres courants $\theta^{(k)}$,
+        reconstruire ce que l'on n'observe pas~: combien de $AA$, $AO$, $\dots$
+        sont plausibles étant donné les phénotypes $(n_A, n_B, n_{AB}, n_O)$~?
+  \item \textbf{Étape M (Maximisation).} En traitant ces données cachées comme si
+        elles étaient connues (remplacées par leur espérance), mettre à jour
+        $\theta$ par maximisation~:
+        $\theta^{(k+1)} \leftarrow$ meilleure valeur de $\theta$ pour ces données
+        « complétées ».
+\end{itemize}
+\end{definition}
+\end{mdframed}
+
+On distingue donc~:
+\begin{itemize}
+  \item les données observées $Y = (n_A, n_B, n_{AB}, n_O)$~;
+  \item les données complètes $(Y, Z)$, où $Z = (n_{AA}, n_{AO}, n_{BB}, n_{BO},
+        n_{AB}, n_{OO})$ est le comptage génotypique.
+\end{itemize}
+
+L'idée directrice est que travailler avec la vraisemblance des données complètes
+est souvent bien plus simple que directement avec celle des données observées.
+On introduit à cet effet la fonction objectif de l'étape E.
+
+\medskip
+
+\begin{mdframed}
+\begin{definition}
+La \textbf{fonction $Q$} est l'espérance de la log-vraisemblance complète,
+conditionnellement aux données observées et aux paramètres courants~:
+$$
+Q_k(\theta) = \mathbb{E}_{\theta^{(k)}}\!\big[\ell_c(\theta) \mid Y\big].
+$$
+Comme $\ell_c(\theta)$ est linéaire en les comptages $n_g$,
+$$
+Q_k(\theta) = \text{const}
+            + \sum_{g} \mathbb{E}_{\theta^{(k)}}[n_g \mid Y]\, \log \mathbb{P}(g).
+$$
+\end{definition}
+\end{mdframed}
+
+En pratique, on remplace chaque $n_g$ par son espérance $\hat{n}_g^{(k)}$ calculée
+à l'étape E~:
+\begin{align*}
+Q_k(\theta) = \text{const}
+  &+ \hat{n}_{AA}^{(k)} \log(p_A^2) + \hat{n}_{AO}^{(k)} \log(2 p_A p_O)
+     + \hat{n}_{AB}^{(k)} \log(2 p_A p_B) \\
+  &+ \hat{n}_{BB}^{(k)} \log(p_B^2) + \hat{n}_{BO}^{(k)} \log(2 p_B p_O)
+     + \hat{n}_{OO}^{(k)} \log(p_O^2).
+\end{align*}
+
+\subsection{EM pour le locus $ABO$}
+
+\paragraph{Étape E : génotypes attendus.}
+À l'itération $k$, on calcule les effectifs attendus des seuls génotypes
+ambigus. Conditionnellement au phénotype $A$~:
+$$
+\mathbb{E}[n_{AA} \mid A, \theta^{(k)}]
+  = n_A \cdot \frac{(p_A^{(k)})^2}{(p_A^{(k)})^2 + 2 p_A^{(k)} p_O^{(k)}}, \qquad
+\mathbb{E}[n_{AO} \mid A, \theta^{(k)}]
+  = n_A - \mathbb{E}[n_{AA} \mid A, \theta^{(k)}].
+$$
+De même pour le phénotype $B$ ($BB$ contre $BO$). Les phénotypes $AB$ et $O$ ne
+sont pas ambigus et ne demandent aucun calcul.
+
+\paragraph{Étape M : mise à jour des fréquences alléliques.}
+Une fois les effectifs génotypiques remplacés par leurs espérances, on cherche
+$\theta^{(k+1)}$ qui maximise $Q_k(\theta)$ sous la contrainte
+$p_A + p_B + p_O = 1$. La solution est, une fois encore, une simple mise à jour
+par comptage~:
+\begin{align*}
+p_A^{(k+1)} &= \frac{2\,\hat{n}_{AA}^{(k)} + \hat{n}_{AO}^{(k)} + n_{AB}}{2n}, \\
+p_B^{(k+1)} &= \frac{2\,\hat{n}_{BB}^{(k)} + \hat{n}_{BO}^{(k)} + n_{AB}}{2n}, \\
+p_O^{(k+1)} &= 1 - p_A^{(k+1)} - p_B^{(k+1)}.
+\end{align*}
+
+\subsection{L'algorithme général}
+
+\medskip
+
+\begin{mdframed}
+\begin{definition}[Schéma général de l'algorithme EM]
+\textbf{Entrée}~: données observées $Y$, initialisation $\theta^{(0)}$,
+tolérance $\varepsilon$.
+\begin{enumerate}
+  \item Fixer $k = 0$.
+  \item \textbf{Étape E}~: calculer
+        $Q_k(\theta) = \mathbb{E}_{\theta^{(k)}}\!\big[\log p(Y, Z \mid \theta)
+        \mid Y\big]$.
+  \item \textbf{Étape M}~: poser
+        $\theta^{(k+1)} = \arg\max_{\theta} Q_k(\theta)$.
+  \item \textbf{Arrêt} si $\|\theta^{(k+1)} - \theta^{(k)}\| < \varepsilon$~;
+        sinon $k \leftarrow k + 1$ et retour à l'étape~2.
+\end{enumerate}
+\end{definition}
+\end{mdframed}
+
+\subsection{Propriété de croissance}
+
+L'intérêt fondamental d'EM tient à une garantie de monotonie.
+
+\begin{remarque}
+Le choix de $\theta^{(k+1)}$ tel que $Q_k(\theta^{(k+1)}) \geq Q_k(\theta^{(k)})$
+entraîne
+$$
+\ell(\theta^{(k+1)}) \geq \ell(\theta^{(k)}),
+$$
+où $\ell$ désigne la log-vraisemblance des \textit{données observées}. Autrement
+dit, celle-ci augmente ou reste constante à chaque itération~: EM produit une
+suite \textbf{monotone croissante} de valeurs de la log-vraisemblance.
+\end{remarque}
+
+Cette propriété explique la grande stabilité numérique d'EM. Elle ne garantit
+toutefois pas~:
+\begin{itemize}
+  \item la convergence vers le maximum \textbf{global} (on peut se retrouver
+        piégé dans un maximum local)~;
+  \item une convergence \textbf{rapide} (la progression peut être lente).
+\end{itemize}
+
+Nous disposons désormais de deux grandes familles de méthodes pour résoudre le
+problème du locus $ABO$~: Newton et le score d'un côté, EM de l'autre. Il reste à
+les mettre en regard.
+
+\section{Comparaison des approches}
+
+Il est éclairant de mettre en regard les méthodes de type Newton et l'algorithme
+EM, car elles incarnent deux compromis opposés.
+
+\begin{center}
+\begin{tabular}{p{6.1cm}p{6.1cm}}
+\hline
+\textbf{Newton / score} & \textbf{Algorithme EM} \\
+\hline
+Convergence rapide, quadratique près du maximum
+  & Convergence monotone, mais souvent lente \\
+Peut diverger si l'initialisation est mauvaise
+  & Augmente la vraisemblance à chaque itération \\
+Requiert le gradient et la hessienne
+  & Requiert une espérance conditionnelle \\
+Délicate si la vraisemblance est compliquée
+  & Simple si la vraisemblance complète est simple \\
+Sensible aux problèmes numériques
+  & Très stable numériquement \\
+\hline
+\end{tabular}
+\end{center}
+
+En un mot~: \textbf{EM échange la vitesse contre la stabilité}. Là où Newton
+converge rapidement mais peut diverger, EM progresse plus lentement tout en
+garantissant, à chaque étape, une vraisemblance qui ne décroît jamais.
+
+\subsection{Estimation de la variance}
+
+Les méthodes de Newton et du score possèdent un avantage précieux sur EM.
+Évaluée au maximum de vraisemblance $\hat{\theta}$, l'inverse de la matrice
+d'information (observée ou attendue),
+$$
+\mathcal{I}^{-1}(\hat{\theta}),
+$$
+fournit une estimation de la matrice de covariance de l'estimateur. On peut ainsi
+quantifier directement la précision du MLE.
+
+Pour EM, la situation est moins confortable~:
+\begin{itemize}
+  \item l'algorithme fournit bien le maximum de vraisemblance $\hat{\theta}$~;
+  \item mais il ne produit pas directement la matrice d'information, et donc pas
+        d'estimation immédiate de la variance.
+\end{itemize}
+
+Se pose alors une question naturelle~: \textit{comment estimer la variance de
+$\hat{\theta}$ lorsqu'on a recours à EM~?} C'est l'objet du chapitre suivant.
+
+\chapter{Le bootstrap}
+
+Une réponse possible consiste à contourner entièrement le calcul de la matrice
+d'information, en approchant la loi de l'estimateur par rééchantillonnage.
+
+\begin{principe}[Bootstrap]
+L'idée est d'\textbf{approcher la distribution de l'estimateur par
+rééchantillonnage}. La procédure est la suivante~:
+\begin{itemize}
+  \item on génère $B$ échantillons bootstrap par tirage avec remise à partir des
+        données observées~;
+  \item pour chaque échantillon $b$, on recalcule l'estimateur $\hat{\theta}^{(b)}$
+        à l'aide de l'algorithme EM~;
+  \item on approche la variance de $\hat{\theta}$ par la variance empirique des
+        $\hat{\theta}^{(b)}$.
+\end{itemize}
+\end{principe}
+
+Formellement, si $\hat{\theta}^{(1)}, \dots, \hat{\theta}^{(B)}$ désignent les
+estimateurs obtenus sur les $B$ échantillons bootstrap, on estime la variance par
+$$
+\hat{\mathbb{V}}[\hat{\theta}]
+  = \frac{1}{B-1} \sum_{b=1}^{B}
+    \big(\hat{\theta}^{(b)} - \bar{\theta}\big)^2,
+\qquad
+\bar{\theta} = \frac{1}{B} \sum_{b=1}^{B} \hat{\theta}^{(b)} .
+$$
+
+On obtient de la sorte une estimation empirique de la précision du MLE, sans
+jamais dériver la log-vraisemblance.
+
+Il existe deux grandes variantes de la méthode, selon que l'on fait ou non
+confiance au modèle.
+
+\medskip
+
+\begin{mdframed}
+\begin{definition}[Bootstrap empirique et paramétrique]
+Le \textbf{bootstrap empirique}~:
+\begin{itemize}
+  \item procède par tirage avec remise à partir des données observées~;
+  \item ne fait aucune hypothèse sur le modèle~;
+  \item recalcule $\hat{\theta}^{(b)}$ (via EM) sur chaque échantillon tiré.
+\end{itemize}
+
+Le \textbf{bootstrap paramétrique}~:
+\begin{itemize}
+  \item suppose le modèle correct~;
+  \item simule de nouvelles données selon la loi ajustée
+        $f(\cdot \mid \hat{\theta})$~;
+  \item recalcule $\hat{\theta}^{(b)}$ (via EM) sur chaque échantillon simulé.
+\end{itemize}
+\end{definition}
+\end{mdframed}
+
+Ces deux variantes se distinguent sur plusieurs plans~:
+
+\begin{center}
+\begin{tabular}{lcc}
+\hline
+ & Empirique & Paramétrique \\
+\hline
+Hypothèse sur le modèle & Non & Oui \\
+Robustesse              & Plus robuste & Dépend du modèle \\
+Variance estimée        & Plus large & Souvent plus petite \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{bilan}[Bootstrap]
+Les avantages~:
+\begin{itemize}
+  \item ne nécessite pas le calcul de la matrice d'information~;
+  \item facile à implémenter~;
+  \item parfaitement compatible avec l'algorithme EM.
+\end{itemize}
+
+Les limites~:
+\begin{itemize}
+  \item un coût de calcul élevé, puisque EM doit être répété $B$ fois~;
+  \item une possible instabilité lorsque l'échantillon est de petite taille~;
+  \item une sensibilité aux problèmes de convergence d'EM.
+\end{itemize}
+\end{bilan}
