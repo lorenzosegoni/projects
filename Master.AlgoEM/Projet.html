@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Lorenzo Segoni">
+
+<title>Projet : Analyse du taux de consanguinité dans une région du nord-est du Brésil</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Projet_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Projet_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Projet_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Projet_files/libs/quarto-html/popper.min.js"></script>
+<script src="Projet_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Projet_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Projet_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Projet_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Projet_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Projet_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Projet_files/libs/bootstrap/bootstrap-633cb30fba0442760c97453a1fb47156.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Sommaire</h2>
+   
+  <ul>
+  <li><a href="#présentation" id="toc-présentation" class="nav-link active" data-scroll-target="#présentation">Présentation</a>
+  <ul class="collapse">
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
+  <li><a href="#questions-1" id="toc-questions-1" class="nav-link" data-scroll-target="#questions-1"><span class="header-section-number">0.1</span> Questions</a></li>
+  </ul></li>
+  <li><a href="#diagnostic-préliminaire-mise-en-évidence-dun-excès-dhomozygotes" id="toc-diagnostic-préliminaire-mise-en-évidence-dun-excès-dhomozygotes" class="nav-link" data-scroll-target="#diagnostic-préliminaire-mise-en-évidence-dun-excès-dhomozygotes"><span class="header-section-number">1</span> Diagnostic préliminaire : mise en évidence d’un excès d’homozygotes</a></li>
+  <li><a href="#modélisation-probabiliste-et-vraisemblances" id="toc-modélisation-probabiliste-et-vraisemblances" class="nav-link" data-scroll-target="#modélisation-probabiliste-et-vraisemblances"><span class="header-section-number">2</span> Modélisation probabiliste et vraisemblances</a></li>
+  <li><a href="#estimation-par-lalgorithme-em" id="toc-estimation-par-lalgorithme-em" class="nav-link" data-scroll-target="#estimation-par-lalgorithme-em"><span class="header-section-number">3</span> Estimation par l’algorithme EM</a></li>
+  <li><a href="#quantification-de-lincertitude-par-bootstrap" id="toc-quantification-de-lincertitude-par-bootstrap" class="nav-link" data-scroll-target="#quantification-de-lincertitude-par-bootstrap"><span class="header-section-number">4</span> Quantification de l’incertitude par bootstrap</a></li>
+  <li><a href="#significativité-du-coefficient-de-consanguinité" id="toc-significativité-du-coefficient-de-consanguinité" class="nav-link" data-scroll-target="#significativité-du-coefficient-de-consanguinité"><span class="header-section-number">5</span> Significativité du coefficient de consanguinité</a></li>
+  <li><a href="#structure-de-dépendance-entre-f-et-p_1" id="toc-structure-de-dépendance-entre-f-et-p_1" class="nav-link" data-scroll-target="#structure-de-dépendance-entre-f-et-p_1"><span class="header-section-number">6</span> Structure de dépendance entre <span class="math inline">\(f\)</span> et <span class="math inline">\(p_1\)</span></a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Projet : Analyse du taux de consanguinité dans une région du nord-est du Brésil</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Montrer tout le code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Cacher tout le code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Voir les sources</a></li></ul></div></div>
+<p class="subtitle lead">Une approche par algorithme EM sur le locus de l’haptoglobine</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Auteur·rice</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lorenzo Segoni </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Date de publication</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">16 juillet 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="présentation" class="level1 unnumbered">
+<h1 class="unnumbered">Présentation</h1>
+<p>Dans une population consanguine, le coefficient de consanguinité <span class="math inline">\(f\)</span> est la probabilité que deux gènes d’une personne aléatoire à un certain locus soient tous les deux des copies du même gène ancestral.</p>
+<p>Nous observons les données suivantes sur les génotypes du gène haptoglobine de <span class="math inline">\(2048\)</span> personnes dans le nord-est du Brésil.</p>
+<p>Le locus de l’haptoglobine a trois allèles codominants, <span class="math inline">\(G1\)</span>, <span class="math inline">\(G2\)</span> et <span class="math inline">\(G3\)</span>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Génotype</th>
+<th>Nombre observé</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(G1/G1\)</span></td>
+<td><span class="math inline">\(128\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(G1/G2\)</span></td>
+<td><span class="math inline">\(196\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(G1/G3\)</span></td>
+<td><span class="math inline">\(429\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(G2/G2\)</span></td>
+<td><span class="math inline">\(173\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(G2/G3\)</span></td>
+<td><span class="math inline">\(513\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(G3/G3\)</span></td>
+<td><span class="math inline">\(609\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Nous supposerons que cette population est à l’équilibre de Hardy-Weinberg. L’objectif principal est de déterminer s’il y a présence de consanguinité dans la population de laquelle est tiré cet échantillon. Nous en profiterons également pour estimer les fréquences alléliques <span class="math inline">\(p_1\)</span>, <span class="math inline">\(p_2\)</span>, <span class="math inline">\(p_3\)</span> des allèles respectifs <span class="math inline">\(G1\)</span>, <span class="math inline">\(G2\)</span>, <span class="math inline">\(G3\)</span> dans cette population.</p>
+<section id="questions" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="questions">Questions</h2>
+<ol type="1">
+<li><p>Dans un premier temps, pouvons souhaiterions avoir une idée rapide d’une possible présence de consanguinité dans la population. Pour se faire, calculez les effectifs attendus de chaque génotype en supposant l’absence de consanguinité.</p>
+<p>Y-a-t-il une augmentation visible du nombre d’homozygotes ?</p></li>
+<li><p>Ecrire la log-vraisemblance des données complètes.</p>
+<ul>
+<li><p>Quelle est la probabilité d’un génotype hétérozygote ?</p></li>
+<li><p>Quelle est la probabilité d’un génotype homozygote ?</p>
+<p><em>Nous remarquerons que ces probabilités peuvent s’écrire conditionnellement à si les deux allèles sont la même copie du même gène ancestral ou non.</em></p></li>
+<li><p>Ecrire la <span class="math inline">\(\log\)</span>-vraisemblance des données observées. Nous pourrons noter <span class="math inline">\(K\)</span>, toute constante ne dépendant pas des paramètres de la fonction.</p></li>
+<li><p>Supposons le nombre de chaque génotype qui sont des copies du même gène ancestral connu. Ecrire la <span class="math inline">\(\log\)</span>-vraisemblance des données complètes.</p></li>
+</ul></li>
+<li><p>Ecrire un algorithme <span class="math inline">\(EM\)</span> pour déterminer un estimateur des fréquences alléliques <span class="math inline">\(p_1\)</span>, <span class="math inline">\(p_2\)</span>, <span class="math inline">\(p_3\)</span> de respectivement <span class="math inline">\(G1\)</span>, <span class="math inline">\(G2\)</span> et <span class="math inline">\(G3\)</span>, ainsi que le coefficient de consanguinité <span class="math inline">\(f\)</span> dans cette population.</p>
+<p>Cet algorithme devra être présenté sous forme d’une fonction <code>R</code>, prenant en entrée : les génotypes observés, un vecteur d’initiation de <span class="math inline">\(\theta = (f , p_1 , p_2, p_3)\)</span> , une marge d’erreur ; et en sortie : une table dont chaque ligne représente les valeurs de <span class="math inline">\(\theta\)</span> après chaque itération.</p>
+<ul>
+<li><p>Expliciter l’étape <span class="math inline">\(E\)</span></p></li>
+<li><p>Expliciter l’étape <span class="math inline">\(M\)</span></p></li>
+</ul></li>
+<li><p>Calculez un estimateur de la matrice de covariance des paramètres.</p>
+<ol type="1">
+<li>Générer <span class="math inline">\(10 \, 000\)</span> échantillons par bootstrap</li>
+<li>Estimer les paramètres pour chaque échantillon</li>
+<li>Construire la matrice de covariance estimée</li>
+<li>Bonus : obtenons-nous des résultats différents en utilisant des méthodes de boostraps empirique ou paramétrique ?</li>
+</ol></li>
+<li><p>Le taux de consanguinité est-il significativement différent de zéro ? Construire un test statistique.</p></li>
+<li><p>Quelle est la corrélation estimée entre <span class="math inline">\(p_1\)</span> et <span class="math inline">\(f\)</span>?</p></li>
+</ol>
+</section>
+<section id="questions-1" class="level2" data-number="0.1">
+<h2 data-number="0.1" class="anchored" data-anchor-id="questions-1"><span class="header-section-number">0.1</span> Questions</h2>
+<ol type="1">
+<li><p>D</p></li>
+<li><p>E</p></li>
+<li><p>E</p></li>
+</ol>
+<!-- -->
+<ol start="4" type="1">
+<li>C</li>
+</ol>
+<!-- -->
+<ol start="5" type="1">
+<li><p>L</p></li>
+<li><p>Q</p></li>
+</ol>
+</section>
+</section>
+<section id="diagnostic-préliminaire-mise-en-évidence-dun-excès-dhomozygotes" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Diagnostic préliminaire : mise en évidence d’un excès d’homozygotes</h1>
+<p>Avant toute modélisation fine, on cherche un indice rapide de consanguinité. La consanguinité augmente mécaniquement la proportion d’homozygotes : il suffit donc de comparer les effectifs homozygotes observés à ceux que prédirait un modèle <strong>sans</strong> consanguinité, où les proportions génotypiques sont purement de Hardy–Weinberg.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Effectifs observés pour chaque génotype</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>G1_G1 <span class="ot">=</span> <span class="dv">128</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>G1_G2 <span class="ot">=</span> <span class="dv">196</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>G1_G3 <span class="ot">=</span> <span class="dv">429</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>G2_G2 <span class="ot">=</span> <span class="dv">173</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>G2_G3 <span class="ot">=</span> <span class="dv">513</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>G3_G3 <span class="ot">=</span> <span class="dv">609</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Taille totale de l'échantillon</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="fu">sum</span>( G1_G1 , G1_G2 , G1_G3 , G2_G2 , G2_G3 , G3_G3 )</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Comptage des allèles</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>f_G1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> G1_G1 <span class="sc">+</span> G1_G2 <span class="sc">+</span> G1_G3 </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>f_G2 <span class="ot">=</span> G1_G2 <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> G2_G2 <span class="sc">+</span> G2_G3 </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>f_G3 <span class="ot">=</span> G1_G3 <span class="sc">+</span> G2_G3 <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> G3_G3</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimation des fréquences alléliques</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>p_G1 <span class="ot">=</span> f_G1 <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>p_G2 <span class="ot">=</span> f_G2 <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>p_G3 <span class="ot">=</span> f_G3 <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Probabilités génotypiques attendues sous Hardy-Weinberg</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>P_G1_G1 <span class="ot">=</span> p_G1 <span class="sc">**</span> <span class="dv">2</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>P_G1_G2 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> p_G1 <span class="sc">*</span> p_G2</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>P_G1_G3 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> p_G1 <span class="sc">*</span> p_G3</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>P_G2_G2 <span class="ot">=</span> p_G2 <span class="sc">**</span> <span class="dv">2</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>P_G2_G3 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> p_G2 <span class="sc">*</span> p_G3</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>P_G3_G3 <span class="ot">=</span> p_G3 <span class="sc">**</span> <span class="dv">2</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Effectifs attendus sous Hardy-Weinberg</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>G1_G1_HW <span class="ot">=</span> P_G1_G1 <span class="sc">*</span> n</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>G1_G2_HW <span class="ot">=</span> P_G1_G2 <span class="sc">*</span> n</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>G1_G3_HW <span class="ot">=</span> P_G1_G3 <span class="sc">*</span> n</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>G2_G2_HW <span class="ot">=</span> P_G2_G2 <span class="sc">*</span> n</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>G2_G3_HW <span class="ot">=</span> P_G2_G3 <span class="sc">*</span> n</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>G3_G3_HW <span class="ot">=</span> P_G3_G3 <span class="sc">*</span> n</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparaison du nombre total d'homozygotes</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>Homozygotes <span class="ot">=</span> G1_G1 <span class="sc">+</span> G2_G2 <span class="sc">+</span> G3_G3</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>Homozygotes_HW <span class="ot">=</span> G1_G1_HW <span class="sc">+</span> G2_G2_HW <span class="sc">+</span> G3_G3_HW</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>Homozygotes</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 910</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Homozygotes_HW</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 800.1448</code></pre>
+</div>
+</div>
+<p>Un test du <span class="math inline">\(\chi^2\)</span> d’ajustement quantifie l’écart global entre effectifs observés et attendus. Le modèle sans consanguinité ayant consommé deux degrés de liberté pour estimer les fréquences alléliques (trois fréquences liées par <span class="math inline">\(\sum p_i = 1\)</span>), il reste <span class="math inline">\(6 - 1 - 2 = 3\)</span> degrés de liberté.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">c</span>(G1_G1 , G1_G2 , G1_G3 , G2_G2 , G2_G3 , G3_G3 )</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">c</span>(G1_G1_HW, G1_G2_HW, G1_G3_HW, G2_G2_HW,G2_G3_HW, G3_G3_HW)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># test X^2 </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>X_2 <span class="ot">&lt;-</span> <span class="fu">sum</span>((A <span class="sc">-</span> B)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> B) <span class="co"># calcule statistique</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>X_2</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 34.87127</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>p_value <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(X_2, <span class="at">df =</span> <span class="dv">3</span>) </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>p_value</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.296973e-07</code></pre>
+</div>
+</div>
+<p>La statistique conduit à une <span class="math inline">\(p\)</span>-valeur de l’ordre de <span class="math inline">\(1{,}3\times 10^{-7}\)</span>, très inférieure à <span class="math inline">\(0{,}05\)</span>. Le modèle d’équilibre de Hardy–Weinberg <strong>sans</strong> consanguinité est donc rejeté sans ambiguïté. Ce diagnostic ne quantifie pas encore <span class="math inline">\(f\)</span> ; il justifie de passer à un modèle qui intègre explicitement la consanguinité.</p>
+</section>
+<section id="modélisation-probabiliste-et-vraisemblances" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Modélisation probabiliste et vraisemblances</h1>
+<p>Pour estimer <span class="math inline">\(f\)</span>, il faut un modèle qui relie ce paramètre aux probabilités génotypiques. L’idée-clé est de <strong>conditionner sur l’identité par descendance</strong> des deux allèles d’un individu.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialisation</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> p_G1</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> p_G2</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> p_G3</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>n11  <span class="ot">&lt;-</span> <span class="dv">128</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>n12 <span class="ot">&lt;-</span> <span class="dv">196</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>n13 <span class="ot">&lt;-</span> <span class="dv">429</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>n22  <span class="ot">&lt;-</span> <span class="dv">173</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>n23 <span class="ot">&lt;-</span> <span class="dv">513</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>n33 <span class="ot">&lt;-</span> <span class="dv">609</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>n    <span class="ot">&lt;-</span> <span class="fu">sum</span> (n11 , n12 , n13 , n22 , n23 , n33)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>prob_homozygote <span class="ot">&lt;-</span> <span class="cf">function</span>(f, p) {</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  f <span class="sc">*</span> p <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>prob_heterozygote <span class="ot">&lt;-</span> <span class="cf">function</span>(f, p_i, p_j) {</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p_i <span class="sc">*</span> p_j</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Probabilités homozygotes</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>P11 <span class="ot">&lt;-</span> <span class="fu">prob_homozygote</span>(f, p1)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>P22 <span class="ot">&lt;-</span> <span class="fu">prob_homozygote</span>(f, p2)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>P33 <span class="ot">&lt;-</span> <span class="fu">prob_homozygote</span>(f, p3)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Probabilités hétérozygotes</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>P12 <span class="ot">&lt;-</span> <span class="fu">prob_heterozygote</span>(f, p1, p2)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>P13 <span class="ot">&lt;-</span> <span class="fu">prob_heterozygote</span>(f, p1, p3)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>P23 <span class="ot">&lt;-</span> <span class="fu">prob_heterozygote</span>(f, p2, p3)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>P_homozygote <span class="ot">&lt;-</span> P11 <span class="sc">+</span> P22 <span class="sc">+</span> P33</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>P_heterozygote <span class="ot">&lt;-</span> P12 <span class="sc">+</span> P13 <span class="sc">+</span> P23</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-vraisemblance observées</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>logv_obs <span class="ot">&lt;-</span> <span class="cf">function</span>(f,p1,p2,p3, <span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>,<span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>) {</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> n11 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_homozygote</span>(f, p1)) <span class="sc">+</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    n22 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_homozygote</span>(f, p2)) <span class="sc">+</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    n33 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_homozygote</span>(f, p3)) <span class="sc">+</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    n12 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_heterozygote</span>(f, p1, p2)) <span class="sc">+</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    n13 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_heterozygote</span>(f, p1, p3)) <span class="sc">+</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    n23 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_heterozygote</span>(f, p2, p3))</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-vraisemblance complètes</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>logv_complete <span class="ot">&lt;-</span> <span class="cf">function</span>(f,p1,p2,p3, n11_C, n22_C, n33_C , <span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>,<span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>) {</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> n11_C <span class="sc">*</span> <span class="fu">log</span>(f <span class="sc">*</span> p1) <span class="sc">+</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    n22_C <span class="sc">*</span> <span class="fu">log</span>(f <span class="sc">*</span> p2) <span class="sc">+</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>    n33_C <span class="sc">*</span> <span class="fu">log</span>(f <span class="sc">*</span> p3) <span class="sc">+</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    (n11 <span class="sc">-</span> n11_C) <span class="sc">*</span> <span class="fu">log</span>( (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> (p1 <span class="sc">**</span> <span class="dv">2</span> ) ) <span class="sc">+</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    (n22 <span class="sc">-</span> n22_C) <span class="sc">*</span> <span class="fu">log</span>( (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> (p2 <span class="sc">**</span> <span class="dv">2</span> ) ) <span class="sc">+</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    (n33 <span class="sc">-</span> n33_C) <span class="sc">*</span> <span class="fu">log</span>( (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> (p3 <span class="sc">**</span> <span class="dv">2</span> ) ) <span class="sc">+</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    n12 <span class="sc">*</span> <span class="fu">log</span>( <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>f) <span class="sc">*</span> p1 <span class="sc">*</span> p2 ) <span class="sc">+</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    n13 <span class="sc">*</span> <span class="fu">log</span>( <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>f) <span class="sc">*</span> p1 <span class="sc">*</span> p3 ) <span class="sc">+</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    n23 <span class="sc">*</span> <span class="fu">log</span>( <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>f) <span class="sc">*</span> p2 <span class="sc">*</span> p3 ) </span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="estimation-par-lalgorithme-em" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Estimation par l’algorithme EM</h1>
+<p>L’algorithme EM alterne l’espérance des données manquantes (étape E) et la maximisation de la vraisemblance complète espérée (étape M), en garantissant une croissance monotone de <span class="math inline">\(\ell_{\text{obs}}\)</span> à chaque itération.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Observation</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>, <span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># EM</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>EM <span class="ot">&lt;-</span> <span class="cf">function</span>( genotype , <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f =</span> <span class="fl">0.1</span>, <span class="at">p1 =</span> <span class="fl">0.33</span>, <span class="at">p2 =</span> <span class="fl">0.33</span>, <span class="at">p3 =</span> <span class="fl">0.34</span>), <span class="at">eps =</span> <span class="fl">1e-8</span>,  <span class="at">max_iter =</span> <span class="dv">2000</span>){</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Effectifs</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  n11 <span class="ot">&lt;-</span> genotype[<span class="st">"n11"</span>] </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  n12 <span class="ot">&lt;-</span> genotype[<span class="st">"n12"</span>] </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  n13 <span class="ot">&lt;-</span> genotype[<span class="st">"n13"</span>]</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  n22 <span class="ot">&lt;-</span> genotype[<span class="st">"n22"</span>]</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  n23 <span class="ot">&lt;-</span> genotype[<span class="st">"n23"</span>]</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  n33 <span class="ot">&lt;-</span> genotype[<span class="st">"n33"</span>]</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">sum</span>(genotype)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Initialisation</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  f  <span class="ot">&lt;-</span> theta_init[<span class="st">"f"</span>]</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> theta_init[<span class="st">"p1"</span>]</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> theta_init[<span class="st">"p2"</span>]</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> theta_init[<span class="st">"p3"</span>]</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  theta_old <span class="ot">&lt;-</span> <span class="fu">c</span>(f, p1, p2, p3)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Matrice des itératios </span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  trace <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> max_iter <span class="sc">+</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(trace) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"f"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span>)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  trace[<span class="dv">1</span>, ] <span class="ot">&lt;-</span> theta_old</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  iter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (iter <span class="sc">&lt;=</span> max_iter) {</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ÉTAPE E</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    denom1 <span class="ot">&lt;-</span> f <span class="sc">*</span> p1 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p1<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    denom2 <span class="ot">&lt;-</span> f <span class="sc">*</span> p2 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p2<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    denom3 <span class="ot">&lt;-</span> f <span class="sc">*</span> p3 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p3<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    gamma1 <span class="ot">&lt;-</span> f <span class="sc">*</span> p1 <span class="sc">/</span> denom1</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    gamma2 <span class="ot">&lt;-</span> f <span class="sc">*</span> p2 <span class="sc">/</span> denom2</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    gamma3 <span class="ot">&lt;-</span> f <span class="sc">*</span> p3 <span class="sc">/</span> denom3</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    n11_C <span class="ot">&lt;-</span> n11 <span class="sc">*</span> gamma1</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    n22_C <span class="ot">&lt;-</span> n22 <span class="sc">*</span> gamma2</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    n33_C <span class="ot">&lt;-</span> n33 <span class="sc">*</span> gamma3</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    n11_barC <span class="ot">&lt;-</span> n11 <span class="sc">-</span> n11_C</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    n22_barC <span class="ot">&lt;-</span> n22 <span class="sc">-</span> n22_C</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    n33_barC <span class="ot">&lt;-</span> n33 <span class="sc">-</span> n33_C</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ÉTAPE M</span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    f_new <span class="ot">&lt;-</span> (n11_C <span class="sc">+</span> n22_C <span class="sc">+</span> n33_C) <span class="sc">/</span> n</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>    M1 <span class="ot">&lt;-</span> n11_C <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> n11_barC <span class="sc">+</span> (n12 <span class="sc">+</span> n13)</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>    M2 <span class="ot">&lt;-</span> n22_C <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> n22_barC <span class="sc">+</span> (n12 <span class="sc">+</span> n23)</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>    M3 <span class="ot">&lt;-</span> n33_C <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> n33_barC <span class="sc">+</span> (n13 <span class="sc">+</span> n23)</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>    M_sum <span class="ot">&lt;-</span> M1 <span class="sc">+</span> M2 <span class="sc">+</span> M3</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>    p1_new <span class="ot">&lt;-</span> M1 <span class="sc">/</span> M_sum</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>    p2_new <span class="ot">&lt;-</span> M2 <span class="sc">/</span> M_sum</span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>    p3_new <span class="ot">&lt;-</span> M3 <span class="sc">/</span> M_sum</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>    theta_new <span class="ot">&lt;-</span> <span class="fu">c</span>(f_new, p1_new, p2_new, p3_new)</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>    trace[iter <span class="sc">+</span> <span class="dv">1</span>, ] <span class="ot">&lt;-</span> theta_new</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CRITÈRE DE CONVERGENCE</span></span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">sqrt</span>(<span class="fu">sum</span>((theta_new <span class="sc">-</span> theta_old)<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">&lt;</span> eps) {</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>      trace <span class="ot">&lt;-</span> trace[<span class="dv">1</span><span class="sc">:</span>(iter <span class="sc">+</span> <span class="dv">1</span>), , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">as.data.frame</span>(trace))</span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mise à jour des données</span></span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a>    theta_old <span class="ot">&lt;-</span> theta_new</span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>    f  <span class="ot">&lt;-</span> f_new</span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a>    p1 <span class="ot">&lt;-</span> p1_new</span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a>    p2 <span class="ot">&lt;-</span> p2_new</span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a>    p3 <span class="ot">&lt;-</span> p3_new</span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>    iter <span class="ot">&lt;-</span> iter <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(trace)</span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>trace_EM   <span class="ot">&lt;-</span> <span class="fu">EM</span>(obs, <span class="at">eps =</span> <span class="fl">1e-10</span>, <span class="at">max_iter =</span> <span class="dv">5000</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>theta_hat  <span class="ot">&lt;-</span> trace_EM[<span class="fu">nrow</span>(trace_EM), ]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(theta_hat, <span class="dv">5</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">f</th>
+<th style="text-align: right;">p1</th>
+<th style="text-align: right;">p2</th>
+<th style="text-align: right;">p3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">110</td>
+<td style="text-align: right;">0.09056</td>
+<td style="text-align: right;">0.21493</td>
+<td style="text-align: right;">0.25745</td>
+<td style="text-align: right;">0.52763</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>L’algorithme converge vers <span class="math inline">\(\hat f \approx 0{,}091\)</span>, avec des fréquences alléliques <span class="math inline">\(\hat p_1 \approx 0{,}215\)</span>, <span class="math inline">\(\hat p_2 \approx 0{,}257\)</span> et <span class="math inline">\(\hat p_3 \approx 0{,}528\)</span>. Les fréquences restent très proches de l’estimation naïve par comptage de gènes — attendu, puisque la consanguinité redistribue les génotypes sans modifier le pool allélique — tandis que <span class="math inline">\(f \approx 0{,}09\)</span> chiffre pour la première fois l’intensité de la consanguinité suggérée par le diagnostic.</p>
+</section>
+<section id="quantification-de-lincertitude-par-bootstrap" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Quantification de l’incertitude par bootstrap</h1>
+<p>L’estimation ponctuelle ne dit rien de sa précision. Faute d’expression close simple pour la matrice de covariance des estimateurs EM, on l’approche par <strong>bootstrap</strong> : on régénère un grand nombre d’échantillons, on ré-estime <span class="math inline">\(\theta\)</span> sur chacun, et l’on prend la covariance empirique des estimations.</p>
+<p>On met en œuvre les deux variantes classiques afin de les comparer :</p>
+<ul>
+<li><strong>bootstrap empirique (non paramétrique)</strong> : on rééchantillonne les <span class="math inline">\(n\)</span> individus avec remise à partir des proportions génotypiques observées ;</li>
+<li><strong>bootstrap paramétrique</strong> : on régénère les effectifs selon une multinomiale dont les probabilités sont celles du modèle évalué en <span class="math inline">\(\hat\theta\)</span>.</li>
+</ul>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>, <span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>bootstrap_empirique <span class="ot">&lt;-</span> <span class="cf">function</span>( genotype , <span class="at">B =</span> <span class="dv">10000</span> , <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f =</span> <span class="fl">0.1</span>, <span class="at">p1 =</span> <span class="fl">0.33</span>, <span class="at">p2 =</span> <span class="fl">0.33</span>, <span class="at">p3 =</span> <span class="fl">0.34</span>), <span class="at">eps =</span> <span class="fl">1e-8</span>) {</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Initialisation</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">sum</span>(genotype)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  geno_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"n11"</span>, <span class="st">"n12"</span>, <span class="st">"n13"</span>, <span class="st">"n22"</span>, <span class="st">"n23"</span>, <span class="st">"n33"</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  probs <span class="ot">&lt;-</span> genotype <span class="sc">/</span> n</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Matrice pour stocker les estimateurs bootstrap</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  theta_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> B, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(theta_mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"f"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rééchantillonnage des génotypes</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    samp <span class="ot">&lt;-</span> <span class="fu">sample</span>(geno_names, <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> probs)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reconstruction du vecteur de comptages bootstrap</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    genotype_b <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="fu">factor</span>(samp, <span class="at">levels =</span> geno_names))</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    genotype_b <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(genotype_b)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(genotype_b) <span class="ot">&lt;-</span> geno_names</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Exécution EM</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    trace_b <span class="ot">&lt;-</span> <span class="fu">EM</span>(genotype_b, <span class="at">theta_init =</span> theta_init, <span class="at">eps =</span> eps)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    theta_hat_b <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">tail</span>(trace_b, <span class="dv">1</span>))</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Stockage</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    theta_mat[b, ] <span class="ot">&lt;-</span> theta_hat_b</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">theta_mat =</span> theta_mat, <span class="at">cov_hat   =</span> <span class="fu">cov</span>(theta_mat))</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co">#Bonus</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>resulat0 <span class="ot">&lt;-</span> <span class="fu">EM</span>(obs, <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f =</span> <span class="fl">0.1</span>, <span class="at">p1 =</span> <span class="fl">0.33</span>, <span class="at">p2 =</span> <span class="fl">0.33</span>, <span class="at">p3 =</span> <span class="fl">0.34</span>), <span class="at">eps =</span> <span class="fl">1e-8</span>, <span class="at">max_iter =</span> <span class="dv">2000</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>resulat0_fin <span class="ot">&lt;-</span> resulat0[<span class="fu">nrow</span>(resulat0), ]</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>f2  <span class="ot">&lt;-</span> resulat0_fin[[<span class="st">"f"</span>]]</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>pA2 <span class="ot">&lt;-</span> resulat0_fin[[<span class="st">"p1"</span>]]</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>pB2 <span class="ot">&lt;-</span> resulat0_fin[[<span class="st">"p2"</span>]]</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>pC2 <span class="ot">&lt;-</span> resulat0_fin[[<span class="st">"p3"</span>]]</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>prob_6types_G <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  <span class="st">"11"</span> <span class="ot">=</span> f2<span class="sc">*</span>pA2 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span>pA2<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>  <span class="st">"12"</span> <span class="ot">=</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>pA2<span class="sc">*</span>pB2,</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>  <span class="st">"13"</span> <span class="ot">=</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>pA2<span class="sc">*</span>pC2,</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>  <span class="st">"22"</span> <span class="ot">=</span> f2<span class="sc">*</span>pB2 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span>pB2<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  <span class="st">"23"</span> <span class="ot">=</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>pB2<span class="sc">*</span>pC2,</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>  <span class="st">"33"</span> <span class="ot">=</span> f2<span class="sc">*</span>pC2 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span>pC2<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(prob_6types_G) <span class="co">#[1] 1</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B &lt;- 10000</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>Echantillons2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> B, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Echantillons2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"pA2"</span>,<span class="st">"pB2"</span>,<span class="st">"pC2"</span>,<span class="st">"f2"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B){</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  echantillon_tab2 <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">rmultinom</span>(<span class="dv">1</span>, <span class="at">size =</span> n, <span class="at">prob =</span> prob_6types_G))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  genotype_b <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">n11 =</span> echantillon_tab2[<span class="dv">1</span>],</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">n12 =</span> echantillon_tab2[<span class="dv">2</span>],</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">n13 =</span> echantillon_tab2[<span class="dv">3</span>],</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">n22 =</span> echantillon_tab2[<span class="dv">4</span>],</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">n23 =</span> echantillon_tab2[<span class="dv">5</span>],</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">n33 =</span> echantillon_tab2[<span class="dv">6</span>]</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  sor2 <span class="ot">&lt;-</span> <span class="fu">EM</span>(genotype_b, <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f =</span> f2, <span class="at">p1 =</span> pA2, <span class="at">p2 =</span> pB2, <span class="at">p3 =</span> pC2), <span class="at">eps =</span> <span class="fl">1e-8</span>, <span class="at">max_iter =</span> <span class="dv">2000</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  fin2 <span class="ot">&lt;-</span> sor2[<span class="fu">nrow</span>(sor2), ]</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  Echantillons2[b, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">pA2 =</span> fin2[[<span class="st">"p1"</span>]],</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">pB2 =</span> fin2[[<span class="st">"p2"</span>]],</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">pC2 =</span> fin2[[<span class="st">"p3"</span>]],</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">f2  =</span> fin2[[<span class="st">"f"</span>]]</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in 1:B: numerical expression has 6 elements: only the first used</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>matrice_cov2 <span class="ot">&lt;-</span> <span class="fu">cov</span>(Echantillons2)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>matrice_cov2</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              pA2           pB2           pC2            f2
+pA2  5.607555e-05 -2.261402e-05 -3.346152e-05  1.257911e-05
+pB2 -2.261402e-05  5.075610e-05 -2.814208e-05 -9.498167e-06
+pC2 -3.346152e-05 -2.814208e-05  6.160360e-05 -3.080939e-06
+f2   1.257911e-05 -9.498167e-06 -3.080939e-06  3.407644e-04</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>SE2 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(matrice_cov2))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>SE2</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        pA2         pB2         pC2          f2 
+0.007488361 0.007124332 0.007848796 0.018459805 </code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>matrice_cor2 <span class="ot">&lt;-</span> <span class="fu">cor</span>(Echantillons2)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>matrice_cor2</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>            pA2         pB2         pC2          f2
+pA2  1.00000000 -0.42388391 -0.56931930  0.09099885
+pB2 -0.42388391  1.00000000 -0.50327922 -0.07222184
+pC2 -0.56931930 -0.50327922  1.00000000 -0.02126439
+f2   0.09099885 -0.07222184 -0.02126439  1.00000000</code></pre>
+</div>
+</div>
+<p>La matrice de covariance fournit les écarts-types des quatre paramètres. On obtient une précision de l’ordre de <span class="math inline">\(\pm 0{,}017\)</span> sur <span class="math inline">\(\hat f\)</span> et de <span class="math inline">\(\pm 0{,}007\)</span> sur chaque fréquence allélique — le coefficient de consanguinité, <span class="math inline">\(\hat f \approx 0{,}091\)</span>, se détache donc largement de zéro au regard de sa propre incertitude.</p>
+<p>Quant à la comparaison des deux méthodes (le <strong>bonus</strong>), les écarts-types empiriques et paramétriques coïncident à la troisième décimale près. Ce n’est pas un hasard : le bootstrap non paramétrique rééchantillonne selon la multinomiale <em>empirique</em>, tandis que le paramétrique rééchantillonne selon la multinomiale <em>ajustée</em> ; or le modèle épouse très bien les données (<span class="math inline">\(f\)</span> et les <span class="math inline">\(p_i\)</span> sont estimés sur les mêmes six proportions), si bien que les deux lois de rééchantillonnage sont presque identiques. Les deux approches sont donc ici interchangeables ; elles divergeraient si le modèle était mal spécifié.</p>
+</section>
+<section id="significativité-du-coefficient-de-consanguinité" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Significativité du coefficient de consanguinité</h1>
+<p>Le diagnostic initial rejetait Hardy–Weinberg, mais on veut maintenant tester directement l’hypothèse <span class="math inline">\(H_0 : f = 0\)</span> <em>dans le cadre du modèle avec consanguinité</em>, contre <span class="math inline">\(H_1 : f &gt; 0\)</span>. On utilise le <strong>test du rapport de vraisemblance</strong>.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>, <span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimation EM</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> <span class="fu">tail</span>(<span class="fu">EM</span>(obs, <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f=</span><span class="fl">0.1</span>, <span class="at">p1=</span><span class="fl">0.33</span>, <span class="at">p2=</span><span class="fl">0.33</span>, <span class="at">p3=</span><span class="fl">0.34</span>), <span class="at">eps =</span> <span class="fl">1e-8</span>, <span class="at">max_iter =</span> <span class="dv">2000</span>), <span class="at">n =</span> <span class="dv">1</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>f_hat <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>f</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>p1_hat <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>p1</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>p2_hat <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>p2</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>p3_hat <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>p3</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimation avec f = 0</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">sum</span>(obs)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>p1_tilde <span class="ot">&lt;-</span> (<span class="dv">2</span><span class="sc">*</span>obs[<span class="st">"n11"</span>] <span class="sc">+</span> obs[<span class="st">"n12"</span>] <span class="sc">+</span> obs[<span class="st">"n13"</span>]) <span class="sc">/</span> (<span class="dv">2</span><span class="sc">*</span>n)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>p2_tilde <span class="ot">&lt;-</span> (<span class="dv">2</span><span class="sc">*</span>obs[<span class="st">"n22"</span>] <span class="sc">+</span> obs[<span class="st">"n12"</span>] <span class="sc">+</span> obs[<span class="st">"n23"</span>]) <span class="sc">/</span> (<span class="dv">2</span><span class="sc">*</span>n)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>p3_tilde <span class="ot">&lt;-</span> (<span class="dv">2</span><span class="sc">*</span>obs[<span class="st">"n33"</span>] <span class="sc">+</span> obs[<span class="st">"n13"</span>] <span class="sc">+</span> obs[<span class="st">"n23"</span>]) <span class="sc">/</span> (<span class="dv">2</span><span class="sc">*</span>n)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co"># logvraisemblance observé</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>l1 <span class="ot">&lt;-</span> <span class="fu">logv_obs</span>(f_hat,  p1_hat,   p2_hat,   p3_hat)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>l0 <span class="ot">&lt;-</span> <span class="fu">logv_obs</span>(<span class="dv">0</span>,      p1_tilde, p2_tilde, p3_tilde)</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Test de vraisemblance</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>Lambda   <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> (l1 <span class="sc">-</span> l0)</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>p_valeur <span class="ot">&lt;-</span> <span class="fu">pchisq</span>(Lambda, <span class="at">df =</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Lambda ="</span>,   <span class="fu">round</span>(Lambda,   <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Lambda = 32.3515 </code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-valeur ="</span>, <span class="fu">formatC</span>(p_valeur, <span class="at">format =</span> <span class="st">"e"</span>, <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-valeur = 1.287e-08 </code></pre>
+</div>
+</div>
+<p>La statistique vaut <span class="math inline">\(\Lambda \approx 32{,}4\)</span>, à comparer au seuil <span class="math inline">\(\chi^2_{1;\,0{,}95} \approx 3{,}84\)</span>. La <span class="math inline">\(p\)</span>-valeur associée, de l’ordre de <span class="math inline">\(1{,}3\times 10^{-8}\)</span>, mène à un rejet franc de <span class="math inline">\(H_0\)</span>. <strong>La consanguinité est hautement significative</strong> dans cette population : l’excès d’homozygotie repéré au départ n’est pas imputable au hasard d’échantillonnage, mais bien à une valeur positive de <span class="math inline">\(f\)</span>.</p>
+</section>
+<section id="structure-de-dépendance-entre-f-et-p_1" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Structure de dépendance entre <span class="math inline">\(f\)</span> et <span class="math inline">\(p_1\)</span></h1>
+<p>Une dernière question porte sur la géométrie de l’estimation : le coefficient de consanguinité est-il estimé <em>indépendamment</em> des fréquences alléliques, ou bien existe-t-il une confusion entre eux ? On lit la réponse dans la matrice de corrélation des estimateurs bootstrap.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>, <span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>boot_emp <span class="ot">&lt;-</span> <span class="fu">bootstrap_empirique</span>(obs, <span class="at">B =</span> <span class="dv">10000</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(boot_emp<span class="sc">$</span>theta_mat)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>cor_matrix</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>             f          p1          p2          p3
+f   1.00000000  0.01932595  0.03562187 -0.04771114
+p1  0.01932595  1.00000000 -0.32491433 -0.54161979
+p2  0.03562187 -0.32491433  1.00000000 -0.61903421
+p3 -0.04771114 -0.54161979 -0.61903421  1.00000000</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>cor_f_p1   <span class="ot">&lt;-</span> cor_matrix[<span class="st">"f"</span>, <span class="st">"p1"</span>]</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Corrélation estimée entre f et p1 :"</span>, <span class="fu">round</span>(cor_f_p1, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Corrélation estimée entre f et p1 : 0.0193 </code></pre>
+</div>
+</div>
+<p>La corrélation estimée entre <span class="math inline">\(\hat f\)</span> et <span class="math inline">\(\hat p_1\)</span> est proche de zéro (de l’ordre de <span class="math inline">\(0{,}02\)</span>–<span class="math inline">\(0{,}04\)</span> selon la graine et la variante de bootstrap). Les deux paramètres sont donc, à toutes fins pratiques, <strong>estimés indépendamment</strong> : le coefficient de consanguinité n’est pas confondu avec la fréquence de l’allèle <span class="math inline">\(G1\)</span>. Autrement dit, l’information sur la consanguinité provient de l’excès <em>global</em> d’homozygotes, quantité largement orthogonale à la composition allélique du pool.</p>
+</section>
+<section id="conclusion" class="level1 unnumbered">
+<h1 class="unnumbered">Conclusion</h1>
+<p>La population du Nord-Est brésilien étudiée présente une consanguinité modérée mais statistiquement indéniable, de l’ordre de <span class="math inline">\(9\,\%\)</span>, au locus de l’haptoglobine.</p>
+<!-- -->
+
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copié");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copié");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Code source</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Projet : Analyse du taux de consanguinité dans une région du nord-est du Brésil"</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Une approche par algorithme EM sur le locus de l'haptoglobine"</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Lorenzo Segoni"</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> today</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> fr</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: "Sommaire"</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co">    number-depth: 2</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: cosmo</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: kable</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a><span class="fu"># Présentation {.unnumbered}</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>Dans une population consanguine, le coefficient de consanguinité $f$ est la probabilité que deux gènes d'une personne aléatoire à un certain locus soient tous les deux des copies du même gène ancestral.</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>Nous observons les données suivantes sur les génotypes du gène haptoglobine de $2048$ personnes dans le nord-est du Brésil.</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>Le locus de l'haptoglobine a trois allèles codominants, $G1$, $G2$ et $G3$.</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Génotype <span class="pp">|</span> Nombre observé <span class="pp">|</span></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------|----------------|</span></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $G1/G1$  <span class="pp">|</span> $128$          <span class="pp">|</span></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $G1/G2$  <span class="pp">|</span> $196$          <span class="pp">|</span></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $G1/G3$  <span class="pp">|</span> $429$          <span class="pp">|</span></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $G2/G2$  <span class="pp">|</span> $173$          <span class="pp">|</span></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $G2/G3$  <span class="pp">|</span> $513$          <span class="pp">|</span></span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $G3/G3$  <span class="pp">|</span> $609$          <span class="pp">|</span></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>Nous supposerons que cette population est à l'équilibre de Hardy-Weinberg. L'objectif principal est de déterminer s'il y a présence de consanguinité dans la population de laquelle est tiré cet échantillon. Nous en profiterons également pour estimer les fréquences alléliques $p_1$, $p_2$, $p_3$ des allèles respectifs $G1$, $G2$, $G3$ dans cette population.</span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## Questions {.unnumbered}</span></span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Dans un premier temps, pouvons souhaiterions avoir une idée rapide d'une possible présence de consanguinité dans la population. Pour se faire, calculez les effectifs attendus de chaque génotype en supposant l'absence de consanguinité.</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>    Y-a-t-il une augmentation visible du nombre d'homozygotes ?</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Ecrire la log-vraisemblance des données complètes.</span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Quelle est la probabilité d’un génotype hétérozygote ?</span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Quelle est la probabilité d’un génotype homozygote ?</span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a>      *Nous remarquerons que ces probabilités peuvent s’écrire conditionnellement à si les deux allèles sont la même copie du même gène ancestral ou non.*</span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Ecrire la $\log$-vraisemblance des données observées. Nous pourrons noter $K$, toute constante ne dépendant pas des paramètres de la fonction.</span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Supposons le nombre de chaque génotype qui sont des copies du même gène ancestral connu. Ecrire la $\log$-vraisemblance des données complètes.</span>
+<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Ecrire un algorithme $EM$ pour déterminer un estimateur des fréquences alléliques $p_1$, $p_2$, $p_3$ de respectivement $G1$, $G2$ et $G3$, ainsi que le coefficient de consanguinité $f$ dans cette population.</span>
+<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-59"><a href="#cb30-59" aria-hidden="true" tabindex="-1"></a>    Cet algorithme devra être présenté sous forme d’une fonction <span class="in">`R`</span>, prenant en entrée : les génotypes observés, un vecteur d’initiation de $\theta = (f , p_1 , p_2, p_3)$ , une marge d’erreur ; et en sortie : une table dont chaque ligne représente les valeurs de $\theta$ après chaque itération.</span>
+<span id="cb30-60"><a href="#cb30-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-61"><a href="#cb30-61" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Expliciter l’étape $E$</span>
+<span id="cb30-62"><a href="#cb30-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-63"><a href="#cb30-63" aria-hidden="true" tabindex="-1"></a><span class="ss">    - </span>Expliciter l’étape $M$</span>
+<span id="cb30-64"><a href="#cb30-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-65"><a href="#cb30-65" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Calculez un estimateur de la matrice de covariance des paramètres.</span>
+<span id="cb30-66"><a href="#cb30-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-67"><a href="#cb30-67" aria-hidden="true" tabindex="-1"></a><span class="ss">    1.  </span>Générer $10 \, 000$ échantillons par bootstrap</span>
+<span id="cb30-68"><a href="#cb30-68" aria-hidden="true" tabindex="-1"></a><span class="ss">    2.  </span>Estimer les paramètres pour chaque échantillon</span>
+<span id="cb30-69"><a href="#cb30-69" aria-hidden="true" tabindex="-1"></a><span class="ss">    3.  </span>Construire la matrice de covariance estimée</span>
+<span id="cb30-70"><a href="#cb30-70" aria-hidden="true" tabindex="-1"></a><span class="ss">    4.  </span>Bonus : obtenons-nous des résultats différents en utilisant des méthodes de boostraps empirique ou paramétrique ?</span>
+<span id="cb30-71"><a href="#cb30-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-72"><a href="#cb30-72" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Le taux de consanguinité est-il significativement différent de zéro ? Construire un test statistique.</span>
+<span id="cb30-73"><a href="#cb30-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-74"><a href="#cb30-74" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>Quelle est la corrélation estimée entre $p_1$ et $f$?</span>
+<span id="cb30-75"><a href="#cb30-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-76"><a href="#cb30-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Questions</span></span>
+<span id="cb30-77"><a href="#cb30-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-78"><a href="#cb30-78" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>D</span>
+<span id="cb30-79"><a href="#cb30-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-80"><a href="#cb30-80" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>E</span>
+<span id="cb30-81"><a href="#cb30-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-82"><a href="#cb30-82" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>E</span>
+<span id="cb30-83"><a href="#cb30-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-84"><a href="#cb30-84" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- --&gt;</span></span>
+<span id="cb30-85"><a href="#cb30-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-86"><a href="#cb30-86" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>C</span>
+<span id="cb30-87"><a href="#cb30-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-88"><a href="#cb30-88" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- --&gt;</span></span>
+<span id="cb30-89"><a href="#cb30-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-90"><a href="#cb30-90" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>L</span>
+<span id="cb30-91"><a href="#cb30-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-92"><a href="#cb30-92" aria-hidden="true" tabindex="-1"></a><span class="ss">6.  </span>Q</span>
+<span id="cb30-93"><a href="#cb30-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-94"><a href="#cb30-94" aria-hidden="true" tabindex="-1"></a><span class="fu"># Diagnostic préliminaire : mise en évidence d'un excès d'homozygotes</span></span>
+<span id="cb30-95"><a href="#cb30-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-96"><a href="#cb30-96" aria-hidden="true" tabindex="-1"></a>Avant toute modélisation fine, on cherche un indice rapide de consanguinité. La consanguinité augmente mécaniquement la proportion d'homozygotes : il suffit donc de comparer les effectifs homozygotes observés à ceux que prédirait un modèle **sans** consanguinité, où les proportions génotypiques sont purement de Hardy–Weinberg.</span>
+<span id="cb30-97"><a href="#cb30-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-100"><a href="#cb30-100" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-101"><a href="#cb30-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: diagnostic</span></span>
+<span id="cb30-102"><a href="#cb30-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-103"><a href="#cb30-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Effectifs observés pour chaque génotype</span></span>
+<span id="cb30-104"><a href="#cb30-104" aria-hidden="true" tabindex="-1"></a>G1_G1 <span class="ot">=</span> <span class="dv">128</span></span>
+<span id="cb30-105"><a href="#cb30-105" aria-hidden="true" tabindex="-1"></a>G1_G2 <span class="ot">=</span> <span class="dv">196</span></span>
+<span id="cb30-106"><a href="#cb30-106" aria-hidden="true" tabindex="-1"></a>G1_G3 <span class="ot">=</span> <span class="dv">429</span></span>
+<span id="cb30-107"><a href="#cb30-107" aria-hidden="true" tabindex="-1"></a>G2_G2 <span class="ot">=</span> <span class="dv">173</span></span>
+<span id="cb30-108"><a href="#cb30-108" aria-hidden="true" tabindex="-1"></a>G2_G3 <span class="ot">=</span> <span class="dv">513</span></span>
+<span id="cb30-109"><a href="#cb30-109" aria-hidden="true" tabindex="-1"></a>G3_G3 <span class="ot">=</span> <span class="dv">609</span></span>
+<span id="cb30-110"><a href="#cb30-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-111"><a href="#cb30-111" aria-hidden="true" tabindex="-1"></a><span class="co"># Taille totale de l'échantillon</span></span>
+<span id="cb30-112"><a href="#cb30-112" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="fu">sum</span>( G1_G1 , G1_G2 , G1_G3 , G2_G2 , G2_G3 , G3_G3 )</span>
+<span id="cb30-113"><a href="#cb30-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-114"><a href="#cb30-114" aria-hidden="true" tabindex="-1"></a><span class="co"># Comptage des allèles</span></span>
+<span id="cb30-115"><a href="#cb30-115" aria-hidden="true" tabindex="-1"></a>f_G1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> G1_G1 <span class="sc">+</span> G1_G2 <span class="sc">+</span> G1_G3 </span>
+<span id="cb30-116"><a href="#cb30-116" aria-hidden="true" tabindex="-1"></a>f_G2 <span class="ot">=</span> G1_G2 <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> G2_G2 <span class="sc">+</span> G2_G3 </span>
+<span id="cb30-117"><a href="#cb30-117" aria-hidden="true" tabindex="-1"></a>f_G3 <span class="ot">=</span> G1_G3 <span class="sc">+</span> G2_G3 <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> G3_G3</span>
+<span id="cb30-118"><a href="#cb30-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-119"><a href="#cb30-119" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimation des fréquences alléliques</span></span>
+<span id="cb30-120"><a href="#cb30-120" aria-hidden="true" tabindex="-1"></a>p_G1 <span class="ot">=</span> f_G1 <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n)</span>
+<span id="cb30-121"><a href="#cb30-121" aria-hidden="true" tabindex="-1"></a>p_G2 <span class="ot">=</span> f_G2 <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n)</span>
+<span id="cb30-122"><a href="#cb30-122" aria-hidden="true" tabindex="-1"></a>p_G3 <span class="ot">=</span> f_G3 <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n)</span>
+<span id="cb30-123"><a href="#cb30-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-124"><a href="#cb30-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Probabilités génotypiques attendues sous Hardy-Weinberg</span></span>
+<span id="cb30-125"><a href="#cb30-125" aria-hidden="true" tabindex="-1"></a>P_G1_G1 <span class="ot">=</span> p_G1 <span class="sc">**</span> <span class="dv">2</span></span>
+<span id="cb30-126"><a href="#cb30-126" aria-hidden="true" tabindex="-1"></a>P_G1_G2 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> p_G1 <span class="sc">*</span> p_G2</span>
+<span id="cb30-127"><a href="#cb30-127" aria-hidden="true" tabindex="-1"></a>P_G1_G3 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> p_G1 <span class="sc">*</span> p_G3</span>
+<span id="cb30-128"><a href="#cb30-128" aria-hidden="true" tabindex="-1"></a>P_G2_G2 <span class="ot">=</span> p_G2 <span class="sc">**</span> <span class="dv">2</span></span>
+<span id="cb30-129"><a href="#cb30-129" aria-hidden="true" tabindex="-1"></a>P_G2_G3 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> p_G2 <span class="sc">*</span> p_G3</span>
+<span id="cb30-130"><a href="#cb30-130" aria-hidden="true" tabindex="-1"></a>P_G3_G3 <span class="ot">=</span> p_G3 <span class="sc">**</span> <span class="dv">2</span></span>
+<span id="cb30-131"><a href="#cb30-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-132"><a href="#cb30-132" aria-hidden="true" tabindex="-1"></a><span class="co"># Effectifs attendus sous Hardy-Weinberg</span></span>
+<span id="cb30-133"><a href="#cb30-133" aria-hidden="true" tabindex="-1"></a>G1_G1_HW <span class="ot">=</span> P_G1_G1 <span class="sc">*</span> n</span>
+<span id="cb30-134"><a href="#cb30-134" aria-hidden="true" tabindex="-1"></a>G1_G2_HW <span class="ot">=</span> P_G1_G2 <span class="sc">*</span> n</span>
+<span id="cb30-135"><a href="#cb30-135" aria-hidden="true" tabindex="-1"></a>G1_G3_HW <span class="ot">=</span> P_G1_G3 <span class="sc">*</span> n</span>
+<span id="cb30-136"><a href="#cb30-136" aria-hidden="true" tabindex="-1"></a>G2_G2_HW <span class="ot">=</span> P_G2_G2 <span class="sc">*</span> n</span>
+<span id="cb30-137"><a href="#cb30-137" aria-hidden="true" tabindex="-1"></a>G2_G3_HW <span class="ot">=</span> P_G2_G3 <span class="sc">*</span> n</span>
+<span id="cb30-138"><a href="#cb30-138" aria-hidden="true" tabindex="-1"></a>G3_G3_HW <span class="ot">=</span> P_G3_G3 <span class="sc">*</span> n</span>
+<span id="cb30-139"><a href="#cb30-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-140"><a href="#cb30-140" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparaison du nombre total d'homozygotes</span></span>
+<span id="cb30-141"><a href="#cb30-141" aria-hidden="true" tabindex="-1"></a>Homozygotes <span class="ot">=</span> G1_G1 <span class="sc">+</span> G2_G2 <span class="sc">+</span> G3_G3</span>
+<span id="cb30-142"><a href="#cb30-142" aria-hidden="true" tabindex="-1"></a>Homozygotes_HW <span class="ot">=</span> G1_G1_HW <span class="sc">+</span> G2_G2_HW <span class="sc">+</span> G3_G3_HW</span>
+<span id="cb30-143"><a href="#cb30-143" aria-hidden="true" tabindex="-1"></a>Homozygotes</span>
+<span id="cb30-144"><a href="#cb30-144" aria-hidden="true" tabindex="-1"></a>Homozygotes_HW</span>
+<span id="cb30-145"><a href="#cb30-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-146"><a href="#cb30-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-147"><a href="#cb30-147" aria-hidden="true" tabindex="-1"></a>Un test du $\chi^2$ d'ajustement quantifie l'écart global entre effectifs observés et attendus. Le modèle sans consanguinité ayant consommé deux degrés de liberté pour estimer les fréquences alléliques (trois fréquences liées par $\sum p_i = 1$), il reste $6 - 1 - 2 = 3$ degrés de liberté.</span>
+<span id="cb30-148"><a href="#cb30-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-151"><a href="#cb30-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-152"><a href="#cb30-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: chi2</span></span>
+<span id="cb30-153"><a href="#cb30-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-154"><a href="#cb30-154" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">c</span>(G1_G1 , G1_G2 , G1_G3 , G2_G2 , G2_G3 , G3_G3 )</span>
+<span id="cb30-155"><a href="#cb30-155" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">c</span>(G1_G1_HW, G1_G2_HW, G1_G3_HW, G2_G2_HW,G2_G3_HW, G3_G3_HW)</span>
+<span id="cb30-156"><a href="#cb30-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-157"><a href="#cb30-157" aria-hidden="true" tabindex="-1"></a><span class="co"># test X^2 </span></span>
+<span id="cb30-158"><a href="#cb30-158" aria-hidden="true" tabindex="-1"></a>X_2 <span class="ot">&lt;-</span> <span class="fu">sum</span>((A <span class="sc">-</span> B)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> B) <span class="co"># calcule statistique</span></span>
+<span id="cb30-159"><a href="#cb30-159" aria-hidden="true" tabindex="-1"></a>X_2</span>
+<span id="cb30-160"><a href="#cb30-160" aria-hidden="true" tabindex="-1"></a>p_value <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(X_2, <span class="at">df =</span> <span class="dv">3</span>) </span>
+<span id="cb30-161"><a href="#cb30-161" aria-hidden="true" tabindex="-1"></a>p_value</span>
+<span id="cb30-162"><a href="#cb30-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-163"><a href="#cb30-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-164"><a href="#cb30-164" aria-hidden="true" tabindex="-1"></a>La statistique conduit à une $p$-valeur de l'ordre de $1{,}3\times 10^{-7}$, très inférieure à $0{,}05$. Le modèle d'équilibre de Hardy–Weinberg **sans** consanguinité est donc rejeté sans ambiguïté. Ce diagnostic ne quantifie pas encore $f$ ; il justifie de passer à un modèle qui intègre explicitement la consanguinité.</span>
+<span id="cb30-165"><a href="#cb30-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-166"><a href="#cb30-166" aria-hidden="true" tabindex="-1"></a><span class="fu"># Modélisation probabiliste et vraisemblances</span></span>
+<span id="cb30-167"><a href="#cb30-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-168"><a href="#cb30-168" aria-hidden="true" tabindex="-1"></a>Pour estimer $f$, il faut un modèle qui relie ce paramètre aux probabilités génotypiques. L'idée-clé est de **conditionner sur l'identité par descendance** des deux allèles d'un individu.</span>
+<span id="cb30-169"><a href="#cb30-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-172"><a href="#cb30-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-173"><a href="#cb30-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: vraisemblances</span></span>
+<span id="cb30-174"><a href="#cb30-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-175"><a href="#cb30-175" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialisation</span></span>
+<span id="cb30-176"><a href="#cb30-176" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb30-177"><a href="#cb30-177" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> p_G1</span>
+<span id="cb30-178"><a href="#cb30-178" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> p_G2</span>
+<span id="cb30-179"><a href="#cb30-179" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> p_G3</span>
+<span id="cb30-180"><a href="#cb30-180" aria-hidden="true" tabindex="-1"></a>n11  <span class="ot">&lt;-</span> <span class="dv">128</span> </span>
+<span id="cb30-181"><a href="#cb30-181" aria-hidden="true" tabindex="-1"></a>n12 <span class="ot">&lt;-</span> <span class="dv">196</span></span>
+<span id="cb30-182"><a href="#cb30-182" aria-hidden="true" tabindex="-1"></a>n13 <span class="ot">&lt;-</span> <span class="dv">429</span></span>
+<span id="cb30-183"><a href="#cb30-183" aria-hidden="true" tabindex="-1"></a>n22  <span class="ot">&lt;-</span> <span class="dv">173</span></span>
+<span id="cb30-184"><a href="#cb30-184" aria-hidden="true" tabindex="-1"></a>n23 <span class="ot">&lt;-</span> <span class="dv">513</span></span>
+<span id="cb30-185"><a href="#cb30-185" aria-hidden="true" tabindex="-1"></a>n33 <span class="ot">&lt;-</span> <span class="dv">609</span></span>
+<span id="cb30-186"><a href="#cb30-186" aria-hidden="true" tabindex="-1"></a>n    <span class="ot">&lt;-</span> <span class="fu">sum</span> (n11 , n12 , n13 , n22 , n23 , n33)</span>
+<span id="cb30-187"><a href="#cb30-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-188"><a href="#cb30-188" aria-hidden="true" tabindex="-1"></a>prob_homozygote <span class="ot">&lt;-</span> <span class="cf">function</span>(f, p) {</span>
+<span id="cb30-189"><a href="#cb30-189" aria-hidden="true" tabindex="-1"></a>  f <span class="sc">*</span> p <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb30-190"><a href="#cb30-190" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-191"><a href="#cb30-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-192"><a href="#cb30-192" aria-hidden="true" tabindex="-1"></a>prob_heterozygote <span class="ot">&lt;-</span> <span class="cf">function</span>(f, p_i, p_j) {</span>
+<span id="cb30-193"><a href="#cb30-193" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p_i <span class="sc">*</span> p_j</span>
+<span id="cb30-194"><a href="#cb30-194" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-195"><a href="#cb30-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-196"><a href="#cb30-196" aria-hidden="true" tabindex="-1"></a><span class="co"># Probabilités homozygotes</span></span>
+<span id="cb30-197"><a href="#cb30-197" aria-hidden="true" tabindex="-1"></a>P11 <span class="ot">&lt;-</span> <span class="fu">prob_homozygote</span>(f, p1)</span>
+<span id="cb30-198"><a href="#cb30-198" aria-hidden="true" tabindex="-1"></a>P22 <span class="ot">&lt;-</span> <span class="fu">prob_homozygote</span>(f, p2)</span>
+<span id="cb30-199"><a href="#cb30-199" aria-hidden="true" tabindex="-1"></a>P33 <span class="ot">&lt;-</span> <span class="fu">prob_homozygote</span>(f, p3)</span>
+<span id="cb30-200"><a href="#cb30-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-201"><a href="#cb30-201" aria-hidden="true" tabindex="-1"></a><span class="co"># Probabilités hétérozygotes</span></span>
+<span id="cb30-202"><a href="#cb30-202" aria-hidden="true" tabindex="-1"></a>P12 <span class="ot">&lt;-</span> <span class="fu">prob_heterozygote</span>(f, p1, p2)</span>
+<span id="cb30-203"><a href="#cb30-203" aria-hidden="true" tabindex="-1"></a>P13 <span class="ot">&lt;-</span> <span class="fu">prob_heterozygote</span>(f, p1, p3)</span>
+<span id="cb30-204"><a href="#cb30-204" aria-hidden="true" tabindex="-1"></a>P23 <span class="ot">&lt;-</span> <span class="fu">prob_heterozygote</span>(f, p2, p3)</span>
+<span id="cb30-205"><a href="#cb30-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-206"><a href="#cb30-206" aria-hidden="true" tabindex="-1"></a>P_homozygote <span class="ot">&lt;-</span> P11 <span class="sc">+</span> P22 <span class="sc">+</span> P33</span>
+<span id="cb30-207"><a href="#cb30-207" aria-hidden="true" tabindex="-1"></a>P_heterozygote <span class="ot">&lt;-</span> P12 <span class="sc">+</span> P13 <span class="sc">+</span> P23</span>
+<span id="cb30-208"><a href="#cb30-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-209"><a href="#cb30-209" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-vraisemblance observées</span></span>
+<span id="cb30-210"><a href="#cb30-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-211"><a href="#cb30-211" aria-hidden="true" tabindex="-1"></a>logv_obs <span class="ot">&lt;-</span> <span class="cf">function</span>(f,p1,p2,p3, <span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>,<span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>) {</span>
+<span id="cb30-212"><a href="#cb30-212" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> n11 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_homozygote</span>(f, p1)) <span class="sc">+</span></span>
+<span id="cb30-213"><a href="#cb30-213" aria-hidden="true" tabindex="-1"></a>    n22 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_homozygote</span>(f, p2)) <span class="sc">+</span></span>
+<span id="cb30-214"><a href="#cb30-214" aria-hidden="true" tabindex="-1"></a>    n33 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_homozygote</span>(f, p3)) <span class="sc">+</span></span>
+<span id="cb30-215"><a href="#cb30-215" aria-hidden="true" tabindex="-1"></a>    n12 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_heterozygote</span>(f, p1, p2)) <span class="sc">+</span></span>
+<span id="cb30-216"><a href="#cb30-216" aria-hidden="true" tabindex="-1"></a>    n13 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_heterozygote</span>(f, p1, p3)) <span class="sc">+</span></span>
+<span id="cb30-217"><a href="#cb30-217" aria-hidden="true" tabindex="-1"></a>    n23 <span class="sc">*</span> <span class="fu">log</span>(<span class="fu">prob_heterozygote</span>(f, p2, p3))</span>
+<span id="cb30-218"><a href="#cb30-218" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-219"><a href="#cb30-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="cb30-220"><a href="#cb30-220" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-221"><a href="#cb30-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-222"><a href="#cb30-222" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-vraisemblance complètes</span></span>
+<span id="cb30-223"><a href="#cb30-223" aria-hidden="true" tabindex="-1"></a>logv_complete <span class="ot">&lt;-</span> <span class="cf">function</span>(f,p1,p2,p3, n11_C, n22_C, n33_C , <span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>,<span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>) {</span>
+<span id="cb30-224"><a href="#cb30-224" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> n11_C <span class="sc">*</span> <span class="fu">log</span>(f <span class="sc">*</span> p1) <span class="sc">+</span></span>
+<span id="cb30-225"><a href="#cb30-225" aria-hidden="true" tabindex="-1"></a>    n22_C <span class="sc">*</span> <span class="fu">log</span>(f <span class="sc">*</span> p2) <span class="sc">+</span></span>
+<span id="cb30-226"><a href="#cb30-226" aria-hidden="true" tabindex="-1"></a>    n33_C <span class="sc">*</span> <span class="fu">log</span>(f <span class="sc">*</span> p3) <span class="sc">+</span></span>
+<span id="cb30-227"><a href="#cb30-227" aria-hidden="true" tabindex="-1"></a>    (n11 <span class="sc">-</span> n11_C) <span class="sc">*</span> <span class="fu">log</span>( (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> (p1 <span class="sc">**</span> <span class="dv">2</span> ) ) <span class="sc">+</span></span>
+<span id="cb30-228"><a href="#cb30-228" aria-hidden="true" tabindex="-1"></a>    (n22 <span class="sc">-</span> n22_C) <span class="sc">*</span> <span class="fu">log</span>( (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> (p2 <span class="sc">**</span> <span class="dv">2</span> ) ) <span class="sc">+</span></span>
+<span id="cb30-229"><a href="#cb30-229" aria-hidden="true" tabindex="-1"></a>    (n33 <span class="sc">-</span> n33_C) <span class="sc">*</span> <span class="fu">log</span>( (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> (p3 <span class="sc">**</span> <span class="dv">2</span> ) ) <span class="sc">+</span></span>
+<span id="cb30-230"><a href="#cb30-230" aria-hidden="true" tabindex="-1"></a>    n12 <span class="sc">*</span> <span class="fu">log</span>( <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>f) <span class="sc">*</span> p1 <span class="sc">*</span> p2 ) <span class="sc">+</span></span>
+<span id="cb30-231"><a href="#cb30-231" aria-hidden="true" tabindex="-1"></a>    n13 <span class="sc">*</span> <span class="fu">log</span>( <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>f) <span class="sc">*</span> p1 <span class="sc">*</span> p3 ) <span class="sc">+</span></span>
+<span id="cb30-232"><a href="#cb30-232" aria-hidden="true" tabindex="-1"></a>    n23 <span class="sc">*</span> <span class="fu">log</span>( <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>f) <span class="sc">*</span> p2 <span class="sc">*</span> p3 ) </span>
+<span id="cb30-233"><a href="#cb30-233" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-234"><a href="#cb30-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="cb30-235"><a href="#cb30-235" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-236"><a href="#cb30-236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-237"><a href="#cb30-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-238"><a href="#cb30-238" aria-hidden="true" tabindex="-1"></a><span class="fu"># Estimation par l'algorithme EM</span></span>
+<span id="cb30-239"><a href="#cb30-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-240"><a href="#cb30-240" aria-hidden="true" tabindex="-1"></a>L'algorithme EM alterne l'espérance des données manquantes (étape E) et la maximisation de la vraisemblance complète espérée (étape M), en garantissant une croissance monotone de $\ell_{\text{obs}}$ à chaque itération.</span>
+<span id="cb30-241"><a href="#cb30-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-244"><a href="#cb30-244" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-245"><a href="#cb30-245" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: em-fonction</span></span>
+<span id="cb30-246"><a href="#cb30-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-247"><a href="#cb30-247" aria-hidden="true" tabindex="-1"></a><span class="co"># Observation</span></span>
+<span id="cb30-248"><a href="#cb30-248" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>, <span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>)</span>
+<span id="cb30-249"><a href="#cb30-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-250"><a href="#cb30-250" aria-hidden="true" tabindex="-1"></a><span class="co"># EM</span></span>
+<span id="cb30-251"><a href="#cb30-251" aria-hidden="true" tabindex="-1"></a>EM <span class="ot">&lt;-</span> <span class="cf">function</span>( genotype , <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f =</span> <span class="fl">0.1</span>, <span class="at">p1 =</span> <span class="fl">0.33</span>, <span class="at">p2 =</span> <span class="fl">0.33</span>, <span class="at">p3 =</span> <span class="fl">0.34</span>), <span class="at">eps =</span> <span class="fl">1e-8</span>,  <span class="at">max_iter =</span> <span class="dv">2000</span>){</span>
+<span id="cb30-252"><a href="#cb30-252" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-253"><a href="#cb30-253" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Effectifs</span></span>
+<span id="cb30-254"><a href="#cb30-254" aria-hidden="true" tabindex="-1"></a>  n11 <span class="ot">&lt;-</span> genotype[<span class="st">"n11"</span>] </span>
+<span id="cb30-255"><a href="#cb30-255" aria-hidden="true" tabindex="-1"></a>  n12 <span class="ot">&lt;-</span> genotype[<span class="st">"n12"</span>] </span>
+<span id="cb30-256"><a href="#cb30-256" aria-hidden="true" tabindex="-1"></a>  n13 <span class="ot">&lt;-</span> genotype[<span class="st">"n13"</span>]</span>
+<span id="cb30-257"><a href="#cb30-257" aria-hidden="true" tabindex="-1"></a>  n22 <span class="ot">&lt;-</span> genotype[<span class="st">"n22"</span>]</span>
+<span id="cb30-258"><a href="#cb30-258" aria-hidden="true" tabindex="-1"></a>  n23 <span class="ot">&lt;-</span> genotype[<span class="st">"n23"</span>]</span>
+<span id="cb30-259"><a href="#cb30-259" aria-hidden="true" tabindex="-1"></a>  n33 <span class="ot">&lt;-</span> genotype[<span class="st">"n33"</span>]</span>
+<span id="cb30-260"><a href="#cb30-260" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-261"><a href="#cb30-261" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">sum</span>(genotype)</span>
+<span id="cb30-262"><a href="#cb30-262" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-263"><a href="#cb30-263" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Initialisation</span></span>
+<span id="cb30-264"><a href="#cb30-264" aria-hidden="true" tabindex="-1"></a>  f  <span class="ot">&lt;-</span> theta_init[<span class="st">"f"</span>]</span>
+<span id="cb30-265"><a href="#cb30-265" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> theta_init[<span class="st">"p1"</span>]</span>
+<span id="cb30-266"><a href="#cb30-266" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> theta_init[<span class="st">"p2"</span>]</span>
+<span id="cb30-267"><a href="#cb30-267" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> theta_init[<span class="st">"p3"</span>]</span>
+<span id="cb30-268"><a href="#cb30-268" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-269"><a href="#cb30-269" aria-hidden="true" tabindex="-1"></a>  theta_old <span class="ot">&lt;-</span> <span class="fu">c</span>(f, p1, p2, p3)</span>
+<span id="cb30-270"><a href="#cb30-270" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-271"><a href="#cb30-271" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Matrice des itératios </span></span>
+<span id="cb30-272"><a href="#cb30-272" aria-hidden="true" tabindex="-1"></a>  trace <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> max_iter <span class="sc">+</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
+<span id="cb30-273"><a href="#cb30-273" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(trace) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"f"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span>)</span>
+<span id="cb30-274"><a href="#cb30-274" aria-hidden="true" tabindex="-1"></a>  trace[<span class="dv">1</span>, ] <span class="ot">&lt;-</span> theta_old</span>
+<span id="cb30-275"><a href="#cb30-275" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-276"><a href="#cb30-276" aria-hidden="true" tabindex="-1"></a>  iter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb30-277"><a href="#cb30-277" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-278"><a href="#cb30-278" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (iter <span class="sc">&lt;=</span> max_iter) {</span>
+<span id="cb30-279"><a href="#cb30-279" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-280"><a href="#cb30-280" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ÉTAPE E</span></span>
+<span id="cb30-281"><a href="#cb30-281" aria-hidden="true" tabindex="-1"></a>    denom1 <span class="ot">&lt;-</span> f <span class="sc">*</span> p1 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p1<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb30-282"><a href="#cb30-282" aria-hidden="true" tabindex="-1"></a>    denom2 <span class="ot">&lt;-</span> f <span class="sc">*</span> p2 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p2<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb30-283"><a href="#cb30-283" aria-hidden="true" tabindex="-1"></a>    denom3 <span class="ot">&lt;-</span> f <span class="sc">*</span> p3 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> f) <span class="sc">*</span> p3<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb30-284"><a href="#cb30-284" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-285"><a href="#cb30-285" aria-hidden="true" tabindex="-1"></a>    gamma1 <span class="ot">&lt;-</span> f <span class="sc">*</span> p1 <span class="sc">/</span> denom1</span>
+<span id="cb30-286"><a href="#cb30-286" aria-hidden="true" tabindex="-1"></a>    gamma2 <span class="ot">&lt;-</span> f <span class="sc">*</span> p2 <span class="sc">/</span> denom2</span>
+<span id="cb30-287"><a href="#cb30-287" aria-hidden="true" tabindex="-1"></a>    gamma3 <span class="ot">&lt;-</span> f <span class="sc">*</span> p3 <span class="sc">/</span> denom3</span>
+<span id="cb30-288"><a href="#cb30-288" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-289"><a href="#cb30-289" aria-hidden="true" tabindex="-1"></a>    n11_C <span class="ot">&lt;-</span> n11 <span class="sc">*</span> gamma1</span>
+<span id="cb30-290"><a href="#cb30-290" aria-hidden="true" tabindex="-1"></a>    n22_C <span class="ot">&lt;-</span> n22 <span class="sc">*</span> gamma2</span>
+<span id="cb30-291"><a href="#cb30-291" aria-hidden="true" tabindex="-1"></a>    n33_C <span class="ot">&lt;-</span> n33 <span class="sc">*</span> gamma3</span>
+<span id="cb30-292"><a href="#cb30-292" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-293"><a href="#cb30-293" aria-hidden="true" tabindex="-1"></a>    n11_barC <span class="ot">&lt;-</span> n11 <span class="sc">-</span> n11_C</span>
+<span id="cb30-294"><a href="#cb30-294" aria-hidden="true" tabindex="-1"></a>    n22_barC <span class="ot">&lt;-</span> n22 <span class="sc">-</span> n22_C</span>
+<span id="cb30-295"><a href="#cb30-295" aria-hidden="true" tabindex="-1"></a>    n33_barC <span class="ot">&lt;-</span> n33 <span class="sc">-</span> n33_C</span>
+<span id="cb30-296"><a href="#cb30-296" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-297"><a href="#cb30-297" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-298"><a href="#cb30-298" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ÉTAPE M</span></span>
+<span id="cb30-299"><a href="#cb30-299" aria-hidden="true" tabindex="-1"></a>    f_new <span class="ot">&lt;-</span> (n11_C <span class="sc">+</span> n22_C <span class="sc">+</span> n33_C) <span class="sc">/</span> n</span>
+<span id="cb30-300"><a href="#cb30-300" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-301"><a href="#cb30-301" aria-hidden="true" tabindex="-1"></a>    M1 <span class="ot">&lt;-</span> n11_C <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> n11_barC <span class="sc">+</span> (n12 <span class="sc">+</span> n13)</span>
+<span id="cb30-302"><a href="#cb30-302" aria-hidden="true" tabindex="-1"></a>    M2 <span class="ot">&lt;-</span> n22_C <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> n22_barC <span class="sc">+</span> (n12 <span class="sc">+</span> n23)</span>
+<span id="cb30-303"><a href="#cb30-303" aria-hidden="true" tabindex="-1"></a>    M3 <span class="ot">&lt;-</span> n33_C <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> n33_barC <span class="sc">+</span> (n13 <span class="sc">+</span> n23)</span>
+<span id="cb30-304"><a href="#cb30-304" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-305"><a href="#cb30-305" aria-hidden="true" tabindex="-1"></a>    M_sum <span class="ot">&lt;-</span> M1 <span class="sc">+</span> M2 <span class="sc">+</span> M3</span>
+<span id="cb30-306"><a href="#cb30-306" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-307"><a href="#cb30-307" aria-hidden="true" tabindex="-1"></a>    p1_new <span class="ot">&lt;-</span> M1 <span class="sc">/</span> M_sum</span>
+<span id="cb30-308"><a href="#cb30-308" aria-hidden="true" tabindex="-1"></a>    p2_new <span class="ot">&lt;-</span> M2 <span class="sc">/</span> M_sum</span>
+<span id="cb30-309"><a href="#cb30-309" aria-hidden="true" tabindex="-1"></a>    p3_new <span class="ot">&lt;-</span> M3 <span class="sc">/</span> M_sum</span>
+<span id="cb30-310"><a href="#cb30-310" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-311"><a href="#cb30-311" aria-hidden="true" tabindex="-1"></a>    theta_new <span class="ot">&lt;-</span> <span class="fu">c</span>(f_new, p1_new, p2_new, p3_new)</span>
+<span id="cb30-312"><a href="#cb30-312" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-313"><a href="#cb30-313" aria-hidden="true" tabindex="-1"></a>    trace[iter <span class="sc">+</span> <span class="dv">1</span>, ] <span class="ot">&lt;-</span> theta_new</span>
+<span id="cb30-314"><a href="#cb30-314" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-315"><a href="#cb30-315" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-316"><a href="#cb30-316" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CRITÈRE DE CONVERGENCE</span></span>
+<span id="cb30-317"><a href="#cb30-317" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">sqrt</span>(<span class="fu">sum</span>((theta_new <span class="sc">-</span> theta_old)<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">&lt;</span> eps) {</span>
+<span id="cb30-318"><a href="#cb30-318" aria-hidden="true" tabindex="-1"></a>      trace <span class="ot">&lt;-</span> trace[<span class="dv">1</span><span class="sc">:</span>(iter <span class="sc">+</span> <span class="dv">1</span>), , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb30-319"><a href="#cb30-319" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">as.data.frame</span>(trace))</span>
+<span id="cb30-320"><a href="#cb30-320" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb30-321"><a href="#cb30-321" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-322"><a href="#cb30-322" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mise à jour des données</span></span>
+<span id="cb30-323"><a href="#cb30-323" aria-hidden="true" tabindex="-1"></a>    theta_old <span class="ot">&lt;-</span> theta_new</span>
+<span id="cb30-324"><a href="#cb30-324" aria-hidden="true" tabindex="-1"></a>    f  <span class="ot">&lt;-</span> f_new</span>
+<span id="cb30-325"><a href="#cb30-325" aria-hidden="true" tabindex="-1"></a>    p1 <span class="ot">&lt;-</span> p1_new</span>
+<span id="cb30-326"><a href="#cb30-326" aria-hidden="true" tabindex="-1"></a>    p2 <span class="ot">&lt;-</span> p2_new</span>
+<span id="cb30-327"><a href="#cb30-327" aria-hidden="true" tabindex="-1"></a>    p3 <span class="ot">&lt;-</span> p3_new</span>
+<span id="cb30-328"><a href="#cb30-328" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-329"><a href="#cb30-329" aria-hidden="true" tabindex="-1"></a>    iter <span class="ot">&lt;-</span> iter <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb30-330"><a href="#cb30-330" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb30-331"><a href="#cb30-331" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-332"><a href="#cb30-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(trace)</span>
+<span id="cb30-333"><a href="#cb30-333" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-334"><a href="#cb30-334" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-335"><a href="#cb30-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-338"><a href="#cb30-338" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-339"><a href="#cb30-339" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: em-resultat</span></span>
+<span id="cb30-340"><a href="#cb30-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-341"><a href="#cb30-341" aria-hidden="true" tabindex="-1"></a>trace_EM   <span class="ot">&lt;-</span> <span class="fu">EM</span>(obs, <span class="at">eps =</span> <span class="fl">1e-10</span>, <span class="at">max_iter =</span> <span class="dv">5000</span>)</span>
+<span id="cb30-342"><a href="#cb30-342" aria-hidden="true" tabindex="-1"></a>theta_hat  <span class="ot">&lt;-</span> trace_EM[<span class="fu">nrow</span>(trace_EM), ]</span>
+<span id="cb30-343"><a href="#cb30-343" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(theta_hat, <span class="dv">5</span>)</span>
+<span id="cb30-344"><a href="#cb30-344" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-345"><a href="#cb30-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-346"><a href="#cb30-346" aria-hidden="true" tabindex="-1"></a>L'algorithme converge vers $\hat f \approx 0{,}091$, avec des fréquences alléliques $\hat p_1 \approx 0{,}215$, $\hat p_2 \approx 0{,}257$ et $\hat p_3 \approx 0{,}528$. Les fréquences restent très proches de l'estimation naïve par comptage de gènes — attendu, puisque la consanguinité redistribue les génotypes sans modifier le pool allélique — tandis que $f \approx 0{,}09$ chiffre pour la première fois l'intensité de la consanguinité suggérée par le diagnostic.</span>
+<span id="cb30-347"><a href="#cb30-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-348"><a href="#cb30-348" aria-hidden="true" tabindex="-1"></a><span class="fu"># Quantification de l'incertitude par bootstrap</span></span>
+<span id="cb30-349"><a href="#cb30-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-350"><a href="#cb30-350" aria-hidden="true" tabindex="-1"></a>L'estimation ponctuelle ne dit rien de sa précision. Faute d'expression close simple pour la matrice de covariance des estimateurs EM, on l'approche par **bootstrap** : on régénère un grand nombre d'échantillons, on ré-estime $\theta$ sur chacun, et l'on prend la covariance empirique des estimations.</span>
+<span id="cb30-351"><a href="#cb30-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-352"><a href="#cb30-352" aria-hidden="true" tabindex="-1"></a>On met en œuvre les deux variantes classiques afin de les comparer :</span>
+<span id="cb30-353"><a href="#cb30-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-354"><a href="#cb30-354" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**bootstrap empirique (non paramétrique)** : on rééchantillonne les $n$ individus avec remise à partir des proportions génotypiques observées ;</span>
+<span id="cb30-355"><a href="#cb30-355" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**bootstrap paramétrique** : on régénère les effectifs selon une multinomiale dont les probabilités sont celles du modèle évalué en $\hat\theta$.</span>
+<span id="cb30-356"><a href="#cb30-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-359"><a href="#cb30-359" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-360"><a href="#cb30-360" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: bootstrap-fonctions</span></span>
+<span id="cb30-361"><a href="#cb30-361" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
+<span id="cb30-362"><a href="#cb30-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-363"><a href="#cb30-363" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>, <span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>)</span>
+<span id="cb30-364"><a href="#cb30-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-365"><a href="#cb30-365" aria-hidden="true" tabindex="-1"></a>bootstrap_empirique <span class="ot">&lt;-</span> <span class="cf">function</span>( genotype , <span class="at">B =</span> <span class="dv">10000</span> , <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f =</span> <span class="fl">0.1</span>, <span class="at">p1 =</span> <span class="fl">0.33</span>, <span class="at">p2 =</span> <span class="fl">0.33</span>, <span class="at">p3 =</span> <span class="fl">0.34</span>), <span class="at">eps =</span> <span class="fl">1e-8</span>) {</span>
+<span id="cb30-366"><a href="#cb30-366" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-367"><a href="#cb30-367" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Initialisation</span></span>
+<span id="cb30-368"><a href="#cb30-368" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">sum</span>(genotype)</span>
+<span id="cb30-369"><a href="#cb30-369" aria-hidden="true" tabindex="-1"></a>  geno_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"n11"</span>, <span class="st">"n12"</span>, <span class="st">"n13"</span>, <span class="st">"n22"</span>, <span class="st">"n23"</span>, <span class="st">"n33"</span>)</span>
+<span id="cb30-370"><a href="#cb30-370" aria-hidden="true" tabindex="-1"></a>  probs <span class="ot">&lt;-</span> genotype <span class="sc">/</span> n</span>
+<span id="cb30-371"><a href="#cb30-371" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-372"><a href="#cb30-372" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Matrice pour stocker les estimateurs bootstrap</span></span>
+<span id="cb30-373"><a href="#cb30-373" aria-hidden="true" tabindex="-1"></a>  theta_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> B, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
+<span id="cb30-374"><a href="#cb30-374" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(theta_mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"f"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span>, <span class="st">"p3"</span>)</span>
+<span id="cb30-375"><a href="#cb30-375" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-376"><a href="#cb30-376" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B) {</span>
+<span id="cb30-377"><a href="#cb30-377" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rééchantillonnage des génotypes</span></span>
+<span id="cb30-378"><a href="#cb30-378" aria-hidden="true" tabindex="-1"></a>    samp <span class="ot">&lt;-</span> <span class="fu">sample</span>(geno_names, <span class="at">size =</span> n, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> probs)</span>
+<span id="cb30-379"><a href="#cb30-379" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-380"><a href="#cb30-380" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reconstruction du vecteur de comptages bootstrap</span></span>
+<span id="cb30-381"><a href="#cb30-381" aria-hidden="true" tabindex="-1"></a>    genotype_b <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="fu">factor</span>(samp, <span class="at">levels =</span> geno_names))</span>
+<span id="cb30-382"><a href="#cb30-382" aria-hidden="true" tabindex="-1"></a>    genotype_b <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(genotype_b)</span>
+<span id="cb30-383"><a href="#cb30-383" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(genotype_b) <span class="ot">&lt;-</span> geno_names</span>
+<span id="cb30-384"><a href="#cb30-384" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-385"><a href="#cb30-385" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Exécution EM</span></span>
+<span id="cb30-386"><a href="#cb30-386" aria-hidden="true" tabindex="-1"></a>    trace_b <span class="ot">&lt;-</span> <span class="fu">EM</span>(genotype_b, <span class="at">theta_init =</span> theta_init, <span class="at">eps =</span> eps)</span>
+<span id="cb30-387"><a href="#cb30-387" aria-hidden="true" tabindex="-1"></a>    theta_hat_b <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">tail</span>(trace_b, <span class="dv">1</span>))</span>
+<span id="cb30-388"><a href="#cb30-388" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb30-389"><a href="#cb30-389" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Stockage</span></span>
+<span id="cb30-390"><a href="#cb30-390" aria-hidden="true" tabindex="-1"></a>    theta_mat[b, ] <span class="ot">&lt;-</span> theta_hat_b</span>
+<span id="cb30-391"><a href="#cb30-391" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb30-392"><a href="#cb30-392" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-393"><a href="#cb30-393" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">theta_mat =</span> theta_mat, <span class="at">cov_hat   =</span> <span class="fu">cov</span>(theta_mat))</span>
+<span id="cb30-394"><a href="#cb30-394" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-395"><a href="#cb30-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-396"><a href="#cb30-396" aria-hidden="true" tabindex="-1"></a><span class="co">#Bonus</span></span>
+<span id="cb30-397"><a href="#cb30-397" aria-hidden="true" tabindex="-1"></a>resulat0 <span class="ot">&lt;-</span> <span class="fu">EM</span>(obs, <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f =</span> <span class="fl">0.1</span>, <span class="at">p1 =</span> <span class="fl">0.33</span>, <span class="at">p2 =</span> <span class="fl">0.33</span>, <span class="at">p3 =</span> <span class="fl">0.34</span>), <span class="at">eps =</span> <span class="fl">1e-8</span>, <span class="at">max_iter =</span> <span class="dv">2000</span>)</span>
+<span id="cb30-398"><a href="#cb30-398" aria-hidden="true" tabindex="-1"></a>resulat0_fin <span class="ot">&lt;-</span> resulat0[<span class="fu">nrow</span>(resulat0), ]</span>
+<span id="cb30-399"><a href="#cb30-399" aria-hidden="true" tabindex="-1"></a>f2  <span class="ot">&lt;-</span> resulat0_fin[[<span class="st">"f"</span>]]</span>
+<span id="cb30-400"><a href="#cb30-400" aria-hidden="true" tabindex="-1"></a>pA2 <span class="ot">&lt;-</span> resulat0_fin[[<span class="st">"p1"</span>]]</span>
+<span id="cb30-401"><a href="#cb30-401" aria-hidden="true" tabindex="-1"></a>pB2 <span class="ot">&lt;-</span> resulat0_fin[[<span class="st">"p2"</span>]]</span>
+<span id="cb30-402"><a href="#cb30-402" aria-hidden="true" tabindex="-1"></a>pC2 <span class="ot">&lt;-</span> resulat0_fin[[<span class="st">"p3"</span>]]</span>
+<span id="cb30-403"><a href="#cb30-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-404"><a href="#cb30-404" aria-hidden="true" tabindex="-1"></a>prob_6types_G <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb30-405"><a href="#cb30-405" aria-hidden="true" tabindex="-1"></a>  <span class="st">"11"</span> <span class="ot">=</span> f2<span class="sc">*</span>pA2 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span>pA2<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb30-406"><a href="#cb30-406" aria-hidden="true" tabindex="-1"></a>  <span class="st">"12"</span> <span class="ot">=</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>pA2<span class="sc">*</span>pB2,</span>
+<span id="cb30-407"><a href="#cb30-407" aria-hidden="true" tabindex="-1"></a>  <span class="st">"13"</span> <span class="ot">=</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>pA2<span class="sc">*</span>pC2,</span>
+<span id="cb30-408"><a href="#cb30-408" aria-hidden="true" tabindex="-1"></a>  <span class="st">"22"</span> <span class="ot">=</span> f2<span class="sc">*</span>pB2 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span>pB2<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb30-409"><a href="#cb30-409" aria-hidden="true" tabindex="-1"></a>  <span class="st">"23"</span> <span class="ot">=</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span><span class="dv">2</span><span class="sc">*</span>pB2<span class="sc">*</span>pC2,</span>
+<span id="cb30-410"><a href="#cb30-410" aria-hidden="true" tabindex="-1"></a>  <span class="st">"33"</span> <span class="ot">=</span> f2<span class="sc">*</span>pC2 <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>f2)<span class="sc">*</span>pC2<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb30-411"><a href="#cb30-411" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-412"><a href="#cb30-412" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(prob_6types_G) <span class="co">#[1] 1</span></span>
+<span id="cb30-413"><a href="#cb30-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-414"><a href="#cb30-414" aria-hidden="true" tabindex="-1"></a><span class="co"># B &lt;- 10000</span></span>
+<span id="cb30-415"><a href="#cb30-415" aria-hidden="true" tabindex="-1"></a>Echantillons2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> B, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
+<span id="cb30-416"><a href="#cb30-416" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Echantillons2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"pA2"</span>,<span class="st">"pB2"</span>,<span class="st">"pC2"</span>,<span class="st">"f2"</span>)</span>
+<span id="cb30-417"><a href="#cb30-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-418"><a href="#cb30-418" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(b <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B){</span>
+<span id="cb30-419"><a href="#cb30-419" aria-hidden="true" tabindex="-1"></a>  echantillon_tab2 <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">rmultinom</span>(<span class="dv">1</span>, <span class="at">size =</span> n, <span class="at">prob =</span> prob_6types_G))</span>
+<span id="cb30-420"><a href="#cb30-420" aria-hidden="true" tabindex="-1"></a>  genotype_b <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb30-421"><a href="#cb30-421" aria-hidden="true" tabindex="-1"></a>    <span class="at">n11 =</span> echantillon_tab2[<span class="dv">1</span>],</span>
+<span id="cb30-422"><a href="#cb30-422" aria-hidden="true" tabindex="-1"></a>    <span class="at">n12 =</span> echantillon_tab2[<span class="dv">2</span>],</span>
+<span id="cb30-423"><a href="#cb30-423" aria-hidden="true" tabindex="-1"></a>    <span class="at">n13 =</span> echantillon_tab2[<span class="dv">3</span>],</span>
+<span id="cb30-424"><a href="#cb30-424" aria-hidden="true" tabindex="-1"></a>    <span class="at">n22 =</span> echantillon_tab2[<span class="dv">4</span>],</span>
+<span id="cb30-425"><a href="#cb30-425" aria-hidden="true" tabindex="-1"></a>    <span class="at">n23 =</span> echantillon_tab2[<span class="dv">5</span>],</span>
+<span id="cb30-426"><a href="#cb30-426" aria-hidden="true" tabindex="-1"></a>    <span class="at">n33 =</span> echantillon_tab2[<span class="dv">6</span>]</span>
+<span id="cb30-427"><a href="#cb30-427" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb30-428"><a href="#cb30-428" aria-hidden="true" tabindex="-1"></a>  sor2 <span class="ot">&lt;-</span> <span class="fu">EM</span>(genotype_b, <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f =</span> f2, <span class="at">p1 =</span> pA2, <span class="at">p2 =</span> pB2, <span class="at">p3 =</span> pC2), <span class="at">eps =</span> <span class="fl">1e-8</span>, <span class="at">max_iter =</span> <span class="dv">2000</span>)</span>
+<span id="cb30-429"><a href="#cb30-429" aria-hidden="true" tabindex="-1"></a>  fin2 <span class="ot">&lt;-</span> sor2[<span class="fu">nrow</span>(sor2), ]</span>
+<span id="cb30-430"><a href="#cb30-430" aria-hidden="true" tabindex="-1"></a>  Echantillons2[b, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb30-431"><a href="#cb30-431" aria-hidden="true" tabindex="-1"></a>    <span class="at">pA2 =</span> fin2[[<span class="st">"p1"</span>]],</span>
+<span id="cb30-432"><a href="#cb30-432" aria-hidden="true" tabindex="-1"></a>    <span class="at">pB2 =</span> fin2[[<span class="st">"p2"</span>]],</span>
+<span id="cb30-433"><a href="#cb30-433" aria-hidden="true" tabindex="-1"></a>    <span class="at">pC2 =</span> fin2[[<span class="st">"p3"</span>]],</span>
+<span id="cb30-434"><a href="#cb30-434" aria-hidden="true" tabindex="-1"></a>    <span class="at">f2  =</span> fin2[[<span class="st">"f"</span>]]</span>
+<span id="cb30-435"><a href="#cb30-435" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb30-436"><a href="#cb30-436" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-437"><a href="#cb30-437" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-438"><a href="#cb30-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-441"><a href="#cb30-441" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-442"><a href="#cb30-442" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: bootstrap-run</span></span>
+<span id="cb30-443"><a href="#cb30-443" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
+<span id="cb30-444"><a href="#cb30-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-445"><a href="#cb30-445" aria-hidden="true" tabindex="-1"></a>matrice_cov2 <span class="ot">&lt;-</span> <span class="fu">cov</span>(Echantillons2)</span>
+<span id="cb30-446"><a href="#cb30-446" aria-hidden="true" tabindex="-1"></a>matrice_cov2</span>
+<span id="cb30-447"><a href="#cb30-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-448"><a href="#cb30-448" aria-hidden="true" tabindex="-1"></a>SE2 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(matrice_cov2))</span>
+<span id="cb30-449"><a href="#cb30-449" aria-hidden="true" tabindex="-1"></a>SE2</span>
+<span id="cb30-450"><a href="#cb30-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-451"><a href="#cb30-451" aria-hidden="true" tabindex="-1"></a>matrice_cor2 <span class="ot">&lt;-</span> <span class="fu">cor</span>(Echantillons2)</span>
+<span id="cb30-452"><a href="#cb30-452" aria-hidden="true" tabindex="-1"></a>matrice_cor2</span>
+<span id="cb30-453"><a href="#cb30-453" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-454"><a href="#cb30-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-455"><a href="#cb30-455" aria-hidden="true" tabindex="-1"></a>La matrice de covariance fournit les écarts-types des quatre paramètres. On obtient une précision de l'ordre de $\pm 0{,}017$ sur $\hat f$ et de $\pm 0{,}007$ sur chaque fréquence allélique — le coefficient de consanguinité, $\hat f \approx 0{,}091$, se détache donc largement de zéro au regard de sa propre incertitude.</span>
+<span id="cb30-456"><a href="#cb30-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-457"><a href="#cb30-457" aria-hidden="true" tabindex="-1"></a>Quant à la comparaison des deux méthodes (le **bonus**), les écarts-types empiriques et paramétriques coïncident à la troisième décimale près. Ce n'est pas un hasard : le bootstrap non paramétrique rééchantillonne selon la multinomiale *empirique*, tandis que le paramétrique rééchantillonne selon la multinomiale *ajustée* ; or le modèle épouse très bien les données ($f$ et les $p_i$ sont estimés sur les mêmes six proportions), si bien que les deux lois de rééchantillonnage sont presque identiques. Les deux approches sont donc ici interchangeables ; elles divergeraient si le modèle était mal spécifié.</span>
+<span id="cb30-458"><a href="#cb30-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-459"><a href="#cb30-459" aria-hidden="true" tabindex="-1"></a><span class="fu"># Significativité du coefficient de consanguinité</span></span>
+<span id="cb30-460"><a href="#cb30-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-461"><a href="#cb30-461" aria-hidden="true" tabindex="-1"></a>Le diagnostic initial rejetait Hardy–Weinberg, mais on veut maintenant tester directement l'hypothèse $H_0 : f = 0$ *dans le cadre du modèle avec consanguinité*, contre $H_1 : f &gt; 0$. On utilise le **test du rapport de vraisemblance**.</span>
+<span id="cb30-462"><a href="#cb30-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-465"><a href="#cb30-465" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-466"><a href="#cb30-466" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: test-lrt</span></span>
+<span id="cb30-467"><a href="#cb30-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-468"><a href="#cb30-468" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>, <span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>)</span>
+<span id="cb30-469"><a href="#cb30-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-470"><a href="#cb30-470" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimation EM</span></span>
+<span id="cb30-471"><a href="#cb30-471" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> <span class="fu">tail</span>(<span class="fu">EM</span>(obs, <span class="at">theta_init =</span> <span class="fu">c</span>(<span class="at">f=</span><span class="fl">0.1</span>, <span class="at">p1=</span><span class="fl">0.33</span>, <span class="at">p2=</span><span class="fl">0.33</span>, <span class="at">p3=</span><span class="fl">0.34</span>), <span class="at">eps =</span> <span class="fl">1e-8</span>, <span class="at">max_iter =</span> <span class="dv">2000</span>), <span class="at">n =</span> <span class="dv">1</span>)</span>
+<span id="cb30-472"><a href="#cb30-472" aria-hidden="true" tabindex="-1"></a>f_hat <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>f</span>
+<span id="cb30-473"><a href="#cb30-473" aria-hidden="true" tabindex="-1"></a>p1_hat <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>p1</span>
+<span id="cb30-474"><a href="#cb30-474" aria-hidden="true" tabindex="-1"></a>p2_hat <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>p2</span>
+<span id="cb30-475"><a href="#cb30-475" aria-hidden="true" tabindex="-1"></a>p3_hat <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>p3</span>
+<span id="cb30-476"><a href="#cb30-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-477"><a href="#cb30-477" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimation avec f = 0</span></span>
+<span id="cb30-478"><a href="#cb30-478" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">sum</span>(obs)</span>
+<span id="cb30-479"><a href="#cb30-479" aria-hidden="true" tabindex="-1"></a>p1_tilde <span class="ot">&lt;-</span> (<span class="dv">2</span><span class="sc">*</span>obs[<span class="st">"n11"</span>] <span class="sc">+</span> obs[<span class="st">"n12"</span>] <span class="sc">+</span> obs[<span class="st">"n13"</span>]) <span class="sc">/</span> (<span class="dv">2</span><span class="sc">*</span>n)</span>
+<span id="cb30-480"><a href="#cb30-480" aria-hidden="true" tabindex="-1"></a>p2_tilde <span class="ot">&lt;-</span> (<span class="dv">2</span><span class="sc">*</span>obs[<span class="st">"n22"</span>] <span class="sc">+</span> obs[<span class="st">"n12"</span>] <span class="sc">+</span> obs[<span class="st">"n23"</span>]) <span class="sc">/</span> (<span class="dv">2</span><span class="sc">*</span>n)</span>
+<span id="cb30-481"><a href="#cb30-481" aria-hidden="true" tabindex="-1"></a>p3_tilde <span class="ot">&lt;-</span> (<span class="dv">2</span><span class="sc">*</span>obs[<span class="st">"n33"</span>] <span class="sc">+</span> obs[<span class="st">"n13"</span>] <span class="sc">+</span> obs[<span class="st">"n23"</span>]) <span class="sc">/</span> (<span class="dv">2</span><span class="sc">*</span>n)</span>
+<span id="cb30-482"><a href="#cb30-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-483"><a href="#cb30-483" aria-hidden="true" tabindex="-1"></a><span class="co"># logvraisemblance observé</span></span>
+<span id="cb30-484"><a href="#cb30-484" aria-hidden="true" tabindex="-1"></a>l1 <span class="ot">&lt;-</span> <span class="fu">logv_obs</span>(f_hat,  p1_hat,   p2_hat,   p3_hat)</span>
+<span id="cb30-485"><a href="#cb30-485" aria-hidden="true" tabindex="-1"></a>l0 <span class="ot">&lt;-</span> <span class="fu">logv_obs</span>(<span class="dv">0</span>,      p1_tilde, p2_tilde, p3_tilde)</span>
+<span id="cb30-486"><a href="#cb30-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-487"><a href="#cb30-487" aria-hidden="true" tabindex="-1"></a><span class="co"># Test de vraisemblance</span></span>
+<span id="cb30-488"><a href="#cb30-488" aria-hidden="true" tabindex="-1"></a>Lambda   <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> (l1 <span class="sc">-</span> l0)</span>
+<span id="cb30-489"><a href="#cb30-489" aria-hidden="true" tabindex="-1"></a>p_valeur <span class="ot">&lt;-</span> <span class="fu">pchisq</span>(Lambda, <span class="at">df =</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb30-490"><a href="#cb30-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-491"><a href="#cb30-491" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Lambda ="</span>,   <span class="fu">round</span>(Lambda,   <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb30-492"><a href="#cb30-492" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-valeur ="</span>, <span class="fu">formatC</span>(p_valeur, <span class="at">format =</span> <span class="st">"e"</span>, <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb30-493"><a href="#cb30-493" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-494"><a href="#cb30-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-495"><a href="#cb30-495" aria-hidden="true" tabindex="-1"></a>La statistique vaut $\Lambda \approx 32{,}4$, à comparer au seuil $\chi^2_{1;\,0{,}95} \approx 3{,}84$. La $p$-valeur associée, de l'ordre de $1{,}3\times 10^{-8}$, mène à un rejet franc de $H_0$. **La consanguinité est hautement significative** dans cette population : l'excès d'homozygotie repéré au départ n'est pas imputable au hasard d'échantillonnage, mais bien à une valeur positive de $f$.</span>
+<span id="cb30-496"><a href="#cb30-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-497"><a href="#cb30-497" aria-hidden="true" tabindex="-1"></a><span class="fu"># Structure de dépendance entre $f$ et $p_1$</span></span>
+<span id="cb30-498"><a href="#cb30-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-499"><a href="#cb30-499" aria-hidden="true" tabindex="-1"></a>Une dernière question porte sur la géométrie de l'estimation : le coefficient de consanguinité est-il estimé *indépendamment* des fréquences alléliques, ou bien existe-t-il une confusion entre eux ? On lit la réponse dans la matrice de corrélation des estimateurs bootstrap.</span>
+<span id="cb30-500"><a href="#cb30-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-503"><a href="#cb30-503" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-504"><a href="#cb30-504" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: correlation</span></span>
+<span id="cb30-505"><a href="#cb30-505" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-506"><a href="#cb30-506" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">n11 =</span> <span class="dv">128</span>, <span class="at">n12 =</span> <span class="dv">196</span>, <span class="at">n13 =</span> <span class="dv">429</span>, <span class="at">n22 =</span> <span class="dv">173</span>, <span class="at">n23 =</span> <span class="dv">513</span>, <span class="at">n33 =</span> <span class="dv">609</span>)</span>
+<span id="cb30-507"><a href="#cb30-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-508"><a href="#cb30-508" aria-hidden="true" tabindex="-1"></a>boot_emp <span class="ot">&lt;-</span> <span class="fu">bootstrap_empirique</span>(obs, <span class="at">B =</span> <span class="dv">10000</span>)</span>
+<span id="cb30-509"><a href="#cb30-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-510"><a href="#cb30-510" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation</span></span>
+<span id="cb30-511"><a href="#cb30-511" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(boot_emp<span class="sc">$</span>theta_mat)</span>
+<span id="cb30-512"><a href="#cb30-512" aria-hidden="true" tabindex="-1"></a>cor_matrix</span>
+<span id="cb30-513"><a href="#cb30-513" aria-hidden="true" tabindex="-1"></a>cor_f_p1   <span class="ot">&lt;-</span> cor_matrix[<span class="st">"f"</span>, <span class="st">"p1"</span>]</span>
+<span id="cb30-514"><a href="#cb30-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-515"><a href="#cb30-515" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Corrélation estimée entre f et p1 :"</span>, <span class="fu">round</span>(cor_f_p1, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb30-516"><a href="#cb30-516" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-517"><a href="#cb30-517" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-518"><a href="#cb30-518" aria-hidden="true" tabindex="-1"></a>La corrélation estimée entre $\hat f$ et $\hat p_1$ est proche de zéro (de l'ordre de $0{,}02$–$0{,}04$ selon la graine et la variante de bootstrap). Les deux paramètres sont donc, à toutes fins pratiques, **estimés indépendamment** : le coefficient de consanguinité n'est pas confondu avec la fréquence de l'allèle $G1$. Autrement dit, l'information sur la consanguinité provient de l'excès *global* d'homozygotes, quantité largement orthogonale à la composition allélique du pool.</span>
+<span id="cb30-519"><a href="#cb30-519" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-520"><a href="#cb30-520" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusion {.unnumbered}</span></span>
+<span id="cb30-521"><a href="#cb30-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-522"><a href="#cb30-522" aria-hidden="true" tabindex="-1"></a>La population du Nord-Est brésilien étudiée présente une consanguinité modérée mais statistiquement indéniable, de l'ordre de $9\,\%$, au locus de l'haptoglobine.</span>
+</code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
