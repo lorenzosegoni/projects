@@ -1,6 +1,6 @@
 {
   "nom": "Analyse du taux de consanguinité dans une population du nord-est du Brésil : une approche par algorithme EM sur le locus de l'haptoglobine",
-  "description": " Ce projet applique l'algorithme EM à l'estimation du coefficient de consanguinité f au locus de l'haptoglobine, en modélisant l'identité par descendance des allèles comme donnée cachée d'un modèle de Hardy–Weinberg enrichi. Après un diagnostic révélant un excès d'homozygotes, EM estime conjointement les fréquences alléliques et la consanguinité (f ≈ 0,09) ; l'incertitude est quantifiée par bootstrap et la significativité confirmée par un test du rapport de vraisemblance (p ≈ 10⁻⁸). La population présente une consanguinité modérée mais statistiquement indéniable.
+  "description": " Ce projet applique l'algorithme EM à l'estimation du coefficient de consanguinité f au locus de l'haptoglobine, en modélisant l'identité par descendance des allèles comme donnée cachée d'un modèle de Hardy–Weinberg enrichi. Après un diagnostic révélant un excès d'homozygotes, EM estime conjointement les fréquences alléliques et la consanguinité ; l'incertitude est quantifiée par bootstrap et la significativité confirmée par un test du rapport de vraisemblance. La population présente une consanguinité modérée mais statistiquement indéniable.
 ",
   "lieu": "Université Paris Cité - Master IMB",
   "date": "2026"
