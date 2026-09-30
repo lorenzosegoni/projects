@@ -1,8 +1,8 @@
 {
-  "name": "Estimating inbreeding in a northeastern Brazilian population: an EM approach at the haptoglobin locus",
-  "description": "EM algorithm to estimate the inbreeding coefficient f at the haptoglobin locus, treating identity-by-descent as a latent variable in an extended Hardy-Weinberg model. Allele frequencies and f are estimated jointly, with bootstrap confidence intervals and a likelihood ratio test for f > 0.",
-  "institution": "Université Paris Cité, Master IMB",
+  "name": "EEG and event-related potentials (ERP): windows into brain activity",
+  "description": "End-of-studies individual project (poster) on electroencephalography and event-related potentials. Covers the neural basis of EEG signals, ERP analysis methods, and a review of automatic vigilance-state classification (alert, drowsy, sleep) using discrete wavelet transform and a feedforward neural network (Kiymik et al., 2004), reporting about 94-96% accuracy.",
+  "institution": "À compléter (établissement et formation)",
   "year": 2026,
-  "keywords": ["EM algorithm", "Hardy-Weinberg", "inbreeding", "latent variables", "bootstrap", "likelihood ratio test"],
+  "keywords": ["EEG", "event-related potentials", "wavelet transform", "feedforward neural network", "vigilance classification", "signal processing"],
   "language": "fr"
 }
