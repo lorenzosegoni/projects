@@ -1,6 +1,8 @@
 {
-  "nom": "Analyse du taux de consanguinité dans une population du nord-est du Brésil : une approche par algorithme EM sur le locus de l'haptoglobine",
-  "description": " Ce projet applique l'algorithme EM à l'estimation du coefficient de consanguinité f au locus de l'haptoglobine, en modélisant l'identité par descendance des allèles comme donnée cachée d'un modèle de Hardy–Weinberg enrichi. Après un diagnostic révélant un excès d'homozygotes, EM estime conjointement les fréquences alléliques et la consanguinité ; l'incertitude est quantifiée par bootstrap et la significativité confirmée par un test du rapport de vraisemblance. La population présente une consanguinité modérée mais statistiquement indéniable.",
-  "lieu": "Université Paris Cité - Master IMB",
-  "date": "2026"
+  "name": "Estimating inbreeding in a northeastern Brazilian population: an EM approach at the haptoglobin locus",
+  "description": "EM algorithm to estimate the inbreeding coefficient f at the haptoglobin locus, treating identity-by-descent as a latent variable in an extended Hardy-Weinberg model. Allele frequencies and f are estimated jointly, with bootstrap confidence intervals and a likelihood ratio test for f > 0.",
+  "institution": "Université Paris Cité, Master IMB",
+  "year": 2026,
+  "keywords": ["EM algorithm", "Hardy-Weinberg", "inbreeding", "latent variables", "bootstrap", "likelihood ratio test"],
+  "language": "fr"
 }
