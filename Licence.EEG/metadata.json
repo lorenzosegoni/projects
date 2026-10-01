@@ -1,7 +1,7 @@
 {
   "name": "EEG and event-related potentials (ERP): windows into brain activity",
   "description": "End-of-studies individual project (poster) on electroencephalography and event-related potentials. Covers the neural basis of EEG signals, ERP analysis methods, and a review of automatic vigilance-state classification (alert, drowsy, sleep) using discrete wavelet transform and a feedforward neural network (Kiymik et al., 2004), reporting about 94-96% accuracy.",
-  "institution": "À compléter (établissement et formation)",
+  "institution": "Université Paris Cité",
   "year": 2026,
   "keywords": ["EEG", "event-related potentials", "wavelet transform", "feedforward neural network", "vigilance classification", "signal processing"],
   "language": "fr"
