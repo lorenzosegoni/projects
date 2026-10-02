@@ -1,0 +1,27 @@
+{
+  "name": "Lynx Project: Time Series Modeling of Canadian Lynx Trappings",
+  "description": "Univariate time series analysis of the annual Canadian lynx trapping series (1821-1934, 114 observations), carried out in R. The project covers exploratory analysis, moving-average decomposition, harmonic (Fourier) regression, formal stationarity tests (ADF, KPSS), and a comparison of ARMA/ARIMA models on a log scale using AIC/BIC, a hold-out test set and rolling-origin cross-validation. An AR(2) model on the log-transformed series is selected: it captures the ~10-year population cycle and gives the best out-of-sample forecasts, whereas the integrated ARIMA(2,1,2) over-differences the stationary series. The final model is used to forecast the population over a 15-year horizon. Main R packages: forecast (Arima, forecast, accuracy, tsCV, checkresiduals, ggAcf/ggPacf, ma, fourier, tslm) for model estimation, forecasting, validation and diagnostics; tseries (adf.test, kpss.test) for stationarity testing; lmtest (coeftest) for Wald tests on coefficients; ggplot2 for visualization.",
+  "institution": "Université Paris Cité, M1 IMB",
+  "year": 2026,
+  "keywords": [
+    "time series",
+    "ARIMA",
+    "AR(2)",
+    "stationarity",
+    "ADF test",
+    "KPSS test",
+    "Fourier regression",
+    "log transformation",
+    "forecasting",
+    "rolling-origin cross-validation",
+    "population cycles",
+    "ecology",
+    "R",
+    "forecast",
+    "tseries",
+    "lmtest",
+    "ggplot2",
+    "rmarkdown"
+  ],
+  "language": "fr"
+}

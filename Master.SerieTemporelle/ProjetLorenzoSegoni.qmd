@@ -1,0 +1,190 @@
+---
+title: "Projet Lynx : modélisation de la série des lynx du Canada"
+author: "Lorenzo Segoni"
+output:
+  pdf_document:
+    toc: true
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.height = 3.5)
+library(forecast); library(ggplot2); library(lmtest); library(tseries)
+```
+
+# 1. Introduction et analyse qualitative
+
+La série `lynx` donne le nombre annuel de lynx du Canada piégés entre 1821 et 1934 (114 observations). C'est l'un des jeux de données les plus classiques en statistique. L'originalité du travail ne vient donc pas des données, mais de la rigueur de la démarche : après une analyse exploratoire et une décomposition, on compare des modèles stochastiques univariés et on sélectionne celui qui prévoit le mieux, avec une validation hors échantillon.
+
+```{r data}
+lynx_ts <- ts(lynx, start = 1821, end = 1934, frequency = 1)
+autoplot(lynx_ts) +
+  labs(title = "Nombre de lynx piégés", x = "Années", y = "Nombre de lynx") +
+  theme_minimal()
+```
+
+On observe une forte structure cyclique (environ 11 cycles, soit une période proche de 10 ans), l'absence de tendance de long terme et une amplitude des pics très irrégulière (de moins de 4 000 à près de 7 000 individus).
+
+## Autocorrélations
+
+```{r acf}
+ggAcf(lynx_ts) + labs(title = "ACF") + theme_minimal()
+ggPacf(lynx_ts) + labs(title = "PACF") + theme_minimal()
+```
+
+L'ACF est une sinusoïde amortie (pic négatif vers le lag 5, pic positif vers le lag 10). La PACF a deux pics marqués aux lags 1 et 2 : signature d'un processus AR(2).
+
+## Tendance et série détrendée
+
+```{r ma}
+lynx.filtered <- ma(lynx_ts, order = 10, centre = TRUE)
+autoplot(lynx_ts, series = "Série originale") +
+  autolayer(lynx.filtered, series = "Tendance (MM d'ordre 10)") +
+  labs(title = "Extraction de la tendance", x = "Temps", y = "Nombre de lynx") +
+  theme_minimal()
+lynx.dt <- lynx_ts - lynx.filtered
+autoplot(lynx.dt) + labs(title = "Série détrendée", y = "Écart à la tendance") + theme_minimal()
+```
+
+La tendance reste dans une bande stable (environ 1 000 à 3 000) : pas de dérive. En revanche, l'amplitude des cycles varie beaucoup (hétéroscédasticité), ce qui motive la transformation logarithmique utilisée plus loin (`lambda = 0`).
+
+## Régression harmonique (Fourier)
+
+```{r fourier}
+lynx_cycle_ts <- ts(lynx_ts, frequency = 10)
+XREG <- fourier(lynx_cycle_ts, K = 5)
+lynx.season <- tslm(lynx_cycle_ts ~ XREG - 1)
+s <- summary(lynx.season); s$adj.r.squared
+```
+
+Seul le cosinus d'ordre 1 est très significatif (p \< 0,001) : la périodicité d'environ 10 ans est bien réelle. Mais le R² ajusté vaut seulement **0,073** : un modèle déterministe n'explique qu'environ 7 % de la variance. Ce résultat est aussi dû au fait que `frequency = 10` impose un cycle exactement décennal, alors que le cycle réel est d'environ 9,6 à 9,9 ans et d'amplitude variable. D'où le recours à une modélisation stochastique.
+
+# 2. Stationnarité : tests formels
+
+Jusqu'ici la stationnarité n'était qu'une impression visuelle. On la teste, sur la série en log (l'échelle de modélisation) :
+
+```{r tests}
+adf.test(log(lynx_ts))    # H0 : racine unitaire
+kpss.test(log(lynx_ts))   # H0 : stationnarité
+```
+
+Les deux tests concordent : l'ADF rejette la racine unitaire et le KPSS ne rejette pas la stationnarité (mêmes conclusions sur la série brute). **Il n'y a donc aucune raison de différencier la série.**
+
+# 3. Modélisation stochastique
+
+## Découpage apprentissage / test
+
+Hold-out simple : 85 % pour l'apprentissage (96 observations, 1821-1916) et 15 % pour le test (18 observations, 1917-1934), soit plus qu'un cycle complet.
+
+```{r split}
+n <- length(lynx_ts)
+train_end <- floor(0.85 * n)
+lynx.train <- window(lynx_ts, end = 1821 + train_end - 1)
+lynx.test  <- window(lynx_ts, start = 1821 + train_end)
+length(lynx.train); length(lynx.test)
+```
+
+## Sélection de l'ordre (même d = 0, donc critères comparables)
+
+```{r select}
+ordres <- list("AR(1)" = c(1,0,0), "ARMA(1,1)" = c(1,0,1), "ARMA(1,2)" = c(1,0,2),
+               "AR(2)" = c(2,0,0), "ARMA(2,1)" = c(2,0,1), "ARMA(2,2)" = c(2,0,2),
+               "AR(3)" = c(3,0,0), "AR(4)" = c(4,0,0))
+fits <- lapply(ordres, function(o) Arima(lynx.train, order = o, lambda = 0))
+df_comp <- data.frame(Modèle = names(fits),
+                      AICc = sapply(fits, `[[`, "aicc"),
+                      BIC  = sapply(fits, `[[`, "bic"))
+df_comp[order(df_comp$AICc), ]
+```
+
+Les modèles à un seul retard sont nettement distancés : un cycle demande au moins deux retards. À partir de l'AR(2), les critères sont presque équivalents ; par parcimonie (BIC) l'AR(2) est retenu comme référence.
+
+```{r ar2}
+fit_ar2 <- fits[["AR(2)"]]
+coeftest(fit_ar2)
+```
+
+Les coefficients (φ₁ ≈ 1,38 ; φ₂ ≈ −0,74) ont des signes opposés et un discriminant négatif (φ₁² + 4φ₂ \< 0) : les racines sont complexes, ce qui produit une oscillation amortie. La période implicite est $2\pi / \arccos\!\big(\varphi_1 / (2\sqrt{-\varphi_2})\big)$ :
+
+```{r period}
+phi <- coef(fit_ar2)[c("ar1", "ar2")]
+2 * pi / acos(phi[1] / (2 * sqrt(-phi[2])))
+```
+
+soit **environ 9,9 ans**, en accord avec le cycle observé : le modèle retrouve bien la périodicité, sans qu'on la lui impose.
+
+## Diagnostic des résidus de l'AR(2)
+
+```{r resid_ar2}
+checkresiduals(fit_ar2, lag = 10)
+```
+
+La p-value du test de Ljung-Box (≈ 0,07 avec 8 degrés de liberté) ne rejette pas le bruit blanc au seuil de 5 %. Les résidus sont donc acceptables, sans être parfaits.
+
+# 4. Stationnaire ou intégré ? Comparaison sur la prévision
+
+Les AIC/BIC de modèles ayant des ordres de différenciation différents **ne sont pas comparables** (la vraisemblance ne porte pas sur les mêmes données, et la constante disparaît quand d \> 0). Un AIC plus bas pour l'ARIMA(2,1,2) ne prouve donc rien. On compare les modèles sur ce qui compte : leur capacité à prévoir hors échantillon.
+
+## Hold-out (18 ans)
+
+```{r holdout}
+cand <- list("AR(2)" = c(2,0,0), "AR(4)" = c(4,0,0), "ARMA(2,2)" = c(2,0,2),
+             "ARIMA(2,1,2)" = c(2,1,2))
+res <- t(sapply(names(cand), function(m) {
+  f  <- Arima(lynx.train, order = cand[[m]], lambda = 0)
+  fc <- forecast(f, h = length(lynx.test))
+  c(RMSE = accuracy(fc, lynx.test)["Test set", "RMSE"],
+    MAE  = accuracy(fc, lynx.test)["Test set", "MAE"],
+    RMSE_log = sqrt(mean((log(lynx.test) - log(fc$mean))^2)))
+}))
+round(res, 2)
+```
+
+Sur un seul découpage, les résultats sont contrastés : l'ARIMA(2,1,2) a un RMSE brut plus faible, mais un MAE plus élevé et une erreur nettement plus grande sur l'échelle log (celle où le modèle est estimé). Un seul découpage de 18 points est trop fragile pour conclure.
+
+## Validation à origine glissante (`tsCV`)
+
+On estime le modèle sur une fenêtre croissante (au départ 60 ans) et on prévoit à 1, 2, 3, 4 et 5 ans. L'erreur est mesurée sur l'échelle log.
+
+```{r tscv}
+ly <- log(lynx_ts)
+f_ar2    <- function(x, h) forecast(Arima(x, order = c(2,0,0)), h = h)
+f_arma22 <- function(x, h) forecast(Arima(x, order = c(2,0,2), method = "CSS-ML"), h = h)
+f_arima  <- function(x, h) forecast(Arima(x, order = c(2,1,2)), h = h)
+rmse_cv <- function(f) sqrt(colMeans(tsCV(ly, f, h = 5, initial = 60)^2, na.rm = TRUE))
+cv <- rbind("AR(2)" = rmse_cv(f_ar2), "ARMA(2,2)" = rmse_cv(f_arma22),
+            "ARIMA(2,1,2)" = rmse_cv(f_arima))
+colnames(cv) <- paste0("h=", 1:5)
+round(cv, 3)
+```
+
+L'AR(2) est le meilleur à tous les horizons, et l'ARIMA(2,1,2) le moins bon, avec un écart qui se creuse quand l'horizon augmente. Cela confirme ce que laissaient prévoir les tests de stationnarité : différencier une série déjà stationnaire dégrade les prévisions (sur-différenciation, perte du retour à la moyenne).
+
+**Conclusion de cette section : le modèle retenu est l'AR(2) sur le logarithme de la série.**
+
+# 5. Prévision finale (AR(2) sur log, série complète)
+
+```{r final}
+fit_final <- Arima(lynx_ts, order = c(2,0,0), lambda = 0)
+prev <- forecast(fit_final, h = 15)
+autoplot(prev) +
+  labs(title = "Prévision de la population de lynx (1935-1949)",
+       subtitle = "Modèle AR(2) sur le logarithme", x = "Années", y = "Nombre de lynx") +
+  theme_minimal()
+round(prev$mean)
+```
+
+La série termine en phase de montée (1 590, 2 657, 3 396 sur 1932-1934). Le modèle prévoit un pic proche de l'année suivante, puis une décroissance vers un minimum autour de 1938-1939, puis une nouvelle remontée. Il reproduit donc l'alternance montée / descente. Deux limites sont à garder en tête :
+
+- l'amplitude : la prévision ponctuelle (médiane, du fait du log) s'amortit vers la moyenne, alors que les vrais pics sont plus élevés et plus brutaux ;
+- l'incertitude : les intervalles de confiance sont multiplicatifs (dus au log) et s'élargissent fortement, ce qui reflète une vraie variabilité des phases d'abondance.
+
+# 6. Conclusion
+
+- La série est stationnaire (ADF et KPSS concordent) et cyclique, avec une période d'environ 10 ans.
+- Un modèle déterministe (Fourier) n'explique que \~7 % de la variance ; la dynamique est stochastique.
+- La transformation logarithmique stabilise la variance ; elle n'est pas le fait du modèle ARIMA.
+- Un AR(2) sur le log capture le cycle (période implicite ≈ 9,9 ans), a des résidus acceptables et obtient les meilleures prévisions en validation glissante.
+- Le modèle intégré ARIMA(2,1,2), choisi à tort dans une première version par comparaison d'AIC non comparables, prévoit moins bien.
+- Limites : modèle univarié linéaire, qui sous-estime l'amplitude des pics. Des pistes naturelles sont les modèles non linéaires (SETAR) ou un modèle bivarié proies-prédateurs (lièvres).
